@@ -1,3 +1,4 @@
+com\smartcampus\ops\common\GlobalExceptionHandler$ErrorResponse.class
 com\smartcampus\ops\auth\AuthController.class
 com\smartcampus\ops\resources\Resource.class
 com\smartcampus\ops\resources\ResourceController.class

@@ -16,9 +16,13 @@ public class NotificationController {
   private NotificationRepository notificationRepository;
 
   @GetMapping("/unread")
-  public List<Notification> unread(@RequestParam String userId) {
+  public List<Notification> unread(@RequestParam("userId") String userId) {
     try {
-      if (userId == null || userId.trim().isEmpty() || userId.equals("undefined")) {
+      // Basic validation for MongoDB ObjectId format (24 hex characters)
+      // Also handles null, empty, "undefined", email strings, or non-ObjectId formats
+      if (userId == null || userId.trim().isEmpty() || userId.equalsIgnoreCase("undefined") || userId.contains("@") || !userId.matches("^[0-9a-fA-F]{24}$")) {
+        log.warn("Invalid or malformed userId received for notifications: '{}'. Returning empty list.", userId);
+        // Frontend should handle this gracefully, e.g., redirect to login or show a message
         return List.of();
       }
       return notificationRepository.findByUserIdAndRead(userId, false);
@@ -30,14 +34,14 @@ public class NotificationController {
   }
 
   @PostMapping("/mark-all-read")
-  public void markAllRead(@RequestParam String userId) {
+  public void markAllRead(@RequestParam("userId") String userId) {
     List<Notification> notifications = notificationRepository.findByUserIdAndRead(userId, false);
     notifications.forEach(n -> n.read = true);
     notificationRepository.saveAll(notifications);
   }
 
   @PostMapping("/{id}/mark-read")
-  public void markAsRead(@PathVariable String id, @RequestParam String userId) {
+  public void markAsRead(@PathVariable String id, @RequestParam("userId") String userId) {
     Notification notification = notificationRepository.findById(id).orElse(null);
     if (notification != null && userId.equals(notification.userId)) {
       notification.read = true;

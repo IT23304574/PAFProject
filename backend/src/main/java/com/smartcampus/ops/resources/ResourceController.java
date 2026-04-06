@@ -19,9 +19,9 @@ public class ResourceController {
 
   @GetMapping
   public List<Resource> list(
-    @RequestParam(required = false) String location,
-    @RequestParam(required = false) String type,
-    @RequestParam(required = false) String status
+    @RequestParam(name = "location", required = false) String location,
+    @RequestParam(name = "type", required = false) String type,
+    @RequestParam(name = "status", required = false) String status
   ) {
     if (location != null) {
       return resourceRepository.findByLocation(location);

@@ -150,11 +150,16 @@ export class ShellComponent implements OnInit {
     const userStr = localStorage.getItem('user');
     if (userStr && userStr !== 'undefined') {
       const user = JSON.parse(userStr);
-      this.userName = user.fullName || user.username;
-      this.currentUserId = user.id;
-      console.log('Current Session User ID:', this.currentUserId);
+      if (user.id && user.id.match(/^[0-9a-fA-F]{24}$/)) { // Validate user ID format
+        this.userName = user.fullName || user.username;
+        this.currentUserId = user.id;
+        console.log('Current Session User ID:', this.currentUserId);
+      } else {
+        this.logout(); // Invalid user ID in localStorage, force logout
+      }
     } else {
       this.userName = null;
+      this.currentUserId = null; // Ensure currentUserId is also nullified
     }
   }
 

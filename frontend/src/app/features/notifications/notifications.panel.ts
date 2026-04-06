@@ -345,10 +345,18 @@ export class NotificationsPanel implements OnInit {
 
   poll() {
     try {
-      const userStr = localStorage.getItem('user');
-      if (!userStr) return;
-      
-      const userId = JSON.parse(userStr).id;
+      const userStr = localStorage.getItem('user'); // Get user string from local storage
+      if (!userStr) {
+        this.loading = false; // Stop loading indicator if no user
+        return;
+      }
+      const user = JSON.parse(userStr); // Parse user object
+      const userId = user.id; // Extract user ID
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) { // Validate user ID format
+        console.warn('Notifications: Invalid user ID in session. Skipping poll.');
+        this.loading = false; // Stop loading indicator if invalid user
+        return;
+      }
       this.loading = true;
 
       this.api.unread(userId).subscribe({

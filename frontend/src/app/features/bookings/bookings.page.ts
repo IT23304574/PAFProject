@@ -388,11 +388,18 @@ export class BookingsPage implements OnInit {
   }
 
   load() {
-    const userStr = localStorage.getItem('user');
-    if (!userStr) return;
-
-    const user = JSON.parse(userStr);
-    const userId = user.id;
+    const userStr = localStorage.getItem('user'); // Get user string from local storage
+    if (!userStr) {
+      this.toast.show('You must be logged in to view bookings.');
+      return;
+    }
+    const user = JSON.parse(userStr); // Parse user object
+    const userId = user.id; // Extract user ID
+    if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) { // Validate user ID format
+      this.toast.show('Invalid user session. Please log in again.');
+      // Optionally, force logout here: this.auth.logout(); this.router.navigate(['/login']);
+      return;
+    }
     console.log('Loading bookings for User ID:', userId);
 
     this.loading = true;

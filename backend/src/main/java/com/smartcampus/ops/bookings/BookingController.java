@@ -24,13 +24,17 @@ public class BookingController {
   }
 
   @GetMapping("/me")
-  public List<Booking> mine(@RequestParam String userId) {
+  public List<Booking> mine(@RequestParam("userId") String userId) {
     try {
-      if (userId == null || userId.trim().isEmpty() || userId.equalsIgnoreCase("undefined") || userId.contains("@")) {
+      // Basic validation for MongoDB ObjectId format (24 hex characters)
+      // Also handles null, empty, "undefined", or email strings
+      if (userId == null || userId.trim().isEmpty() || userId.equalsIgnoreCase("undefined") || userId.contains("@") || !userId.matches("^[0-9a-fA-F]{24}$")) {
+        log.warn("Invalid or malformed userId received for bookings: '{}'. Returning empty list.", userId);
+        // Frontend should handle this gracefully, e.g., redirect to login or show a message
         return List.of();
       }
       List<Booking> list = bookingRepository.findByUserId(userId);
-      log.info("Booking check for ID: {}. Found: {}.", userId, list.size());
+      log.info("DATABASE READ: userId={} | Count={} | TotalInDB={}", userId, list.size(), bookingRepository.count());
       return list;
     } catch (Exception e) {
       log.error("Error fetching bookings for user {}: {}", userId, e.getMessage());

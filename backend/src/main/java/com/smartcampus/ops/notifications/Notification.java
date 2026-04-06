@@ -1,5 +1,6 @@
 package com.smartcampus.ops.notifications;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.Instant;
@@ -13,6 +14,7 @@ public class Notification {
   public String message;
   public String type; // e.g., booking, ticket, alert
   public boolean read;
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX", timezone = "UTC")
   public Instant createdAt;
 
   public Notification() {}
