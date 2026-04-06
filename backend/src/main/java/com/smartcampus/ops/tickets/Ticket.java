@@ -1,0 +1,37 @@
+package com.smartcampus.ops.tickets;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import java.time.Instant;
+
+@Document(collection = "tickets")
+public class Ticket {
+  @Id
+  public String id;
+  @Field("userId")
+  public String userId; // Added userId field
+  public String resourceId;
+  public String category;
+  public String priority; // LOW, MEDIUM, HIGH
+  public String description;
+  public String status; // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  public String evidenceUrl;
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX", timezone = "UTC")
+  public Instant createdAt;
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX", timezone = "UTC")
+  public Instant updatedAt;
+
+  public Ticket() {}
+  public Ticket(String resourceId, String userId, String category, String priority, String description) {
+    this.resourceId = resourceId;
+    this.userId = userId;
+    this.category = category;
+    this.priority = priority;
+    this.description = description;
+    this.status = "OPEN";
+    this.createdAt = Instant.now();
+    this.updatedAt = Instant.now();
+  }
+}

@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      # Atlas: password must URL-encode # as %23. Override with env MONGODB_URI if needed.
+      uri: ${MONGODB_URI:mongodb+srv://sadeesh:82539685%23Jmc@paf.eo9iuqw.mongodb.net/smartcampus_ops?retryWrites=true&w=majority}
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+
+app:
+  apiBase: /api/v1
+  jwt:
+    issuer: smart-campus-ops-hub
+    ttlMinutes: 240
+    # dev-only secret. Change for production.
+    secret: "dev-only-change-this-secret-dev-only-change-this-secret"
+  uploads:
+    dir: "${user.home}/smartcampus-uploads"
+    maxBytes: 5242880 # 5MB
