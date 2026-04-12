@@ -25,6 +25,11 @@
   border-radius: 4px;
 }
 
+.signin-button {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
 button {
   width: 100%;
   padding: 10px;
@@ -55,8 +60,15 @@ button:disabled {
   text-transform: uppercase;
 }
 
-#google-button-container {
+.google-btn-wrapper {
   margin-top: 10px;
-  min-height: 44px;
+  min-height: 44px; /* Essential: prevents the container from being 0px high */
+  min-width: 200px;
   width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.google-btn {
+  overflow: hidden; /* Ensures the injected iframe stays within bounds */
 }

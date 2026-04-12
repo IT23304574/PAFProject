@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { AuthService } from './auth.service';
@@ -114,7 +114,7 @@ declare var google: any;
     }
   `]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
   email = '';
   password = '';
   isLoading = false;
@@ -123,33 +123,62 @@ export class LoginComponent implements OnInit {
   constructor(
     public toast: ToastService,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) {
     this.checkLoginStatus();
   }
   
   ngOnInit() {
-    const checkGoogle = setInterval(() => {
-      const g = (window as any).google;
-      if (g && g.accounts && document.getElementById('googleBtn')) {
-        this.initGoogleAuth();
-        clearInterval(checkGoogle);
-      }
-    }, 300);
+  }
+
+  ngAfterViewInit() {
+    this.loadGoogleLibrary();
+  }
+
+  private loadGoogleLibrary() {
+    if ((window as any).google?.accounts?.id) {
+      this.initGoogleAuth();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => this.initGoogleAuth();
+    document.body.appendChild(script);
   }
 
   initGoogleAuth() {
-    const g = (window as any).google;
-    if (!g) return;
+    const g = (window as any).google?.accounts?.id;
+    if (!g) {
+      setTimeout(() => this.initGoogleAuth(), 100);
+      return;
+    }
     
-    g.accounts.id.initialize({
-      client_id: '407408718192.apps.googleusercontent.com',
-      callback: (response: any) => this.handleGoogleLogin(response.credential)
+    g.initialize({
+      client_id: '725051219392-u8oac67c5dusdgb9ht9q3u683iss1lfl.apps.googleusercontent.com',
+      callback: (response: any) => {
+        this.ngZone.run(() => this.handleGoogleLogin(response.credential));
+      },
+      use_fedcm_for_prompt: true
     });
-    g.accounts.id.renderButton(
-      document.getElementById('googleBtn'),
-      { theme: 'outline', size: 'large', width: '100%' }
-    );
+
+    const btnElement = document.getElementById('googleBtn');
+    if (btnElement) {
+      g.renderButton(
+        btnElement,
+        { 
+          theme: 'outline', 
+          size: 'large', 
+          width: btnElement.offsetWidth || 350, 
+          text: 'continue_with' 
+        }
+      );
+    }
+
+    // Display the One Tap account selector automatically
+    g.prompt();
   }
 
   checkLoginStatus() {
