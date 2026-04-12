@@ -1,14 +1,10 @@
-# PAFProject
-
-backend run code = $env:JAVA_HOME = "E:\JAVA setup and files"
->> ./mvnw clean spring-boot:run
-
-front end run code = npm start<!-- login.page.html -->
 <div class="login-container">
   <h2>Login to Smart Campus</h2>
-  
-  <!-- The (ngSubmit) ensures Angular handles the logic, 
-       while the <form> allows the browser to see the login context -->
+
+  <!-- 
+    Using a standard <form> tag is crucial for Google Password Manager 
+    to recognize this as a login attempt.
+  -->
   <form (ngSubmit)="handleLogin()" #loginForm="ngForm">
     <div class="form-group">
       <label for="email">Email Address</label>
@@ -40,4 +36,10 @@ front end run code = npm start<!-- login.page.html -->
       Sign In
     </button>
   </form>
+
+  <div class="divider">
+    <span>OR</span>
+  </div>
+
+  <div id="google-button-container"></div>
 </div>
