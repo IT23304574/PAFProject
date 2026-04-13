@@ -1,8 +1,7 @@
 # PAFProject
 
-backend run code = $env:JAVA_HOME = "E:\JAVA setup and files"
+backend run code = $env:JAVA_HOME = cd c:\Users\Dell\Desktop\smart-campus-ops-hub\backend
 >> ./mvnw clean spring-boot:run
-
 front end run code = npm start<!-- login.page.html -->
 <div class="login-container">
   <h2>Login to Smart Campus</h2>
