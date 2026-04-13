@@ -62,6 +62,22 @@ public class BookingController {
       throw new com.smartcampus.ops.common.BadRequestException("resourceId, startTime, endTime, and userId are required");
     }
 
+    // 1. Basic Time Validation
+    if (booking.startTime.isAfter(booking.endTime)) {
+      throw new com.smartcampus.ops.common.BadRequestException("Start time must be before end time");
+    }
+
+    // 2. Conflict Checking Logic
+    List<Booking> conflicts = bookingRepository.findOverlappingBookings(
+        booking.resourceId, 
+        booking.startTime, 
+        booking.endTime
+    );
+
+    if (!conflicts.isEmpty()) {
+      throw new com.smartcampus.ops.common.BadRequestException("Conflict detected: This resource is already booked for the selected time slot.");
+    }
+
     // Set default values if not provided
     if (booking.status == null) booking.status = "PENDING";
     booking.createdAt = Instant.now();
