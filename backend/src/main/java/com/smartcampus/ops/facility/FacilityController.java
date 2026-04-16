@@ -1,4 +1,4 @@
-package com.example.backend.facility;
+package com.smartcampus.ops.facility;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

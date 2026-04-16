@@ -1,4 +1,4 @@
-package com.example.backend.facility;
+package com.smartcampus.ops.facility;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,24 +15,26 @@ public class FacilityService {
     }
 
     public Facility getFacilityById(Long id) {
-        return facilityRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Facility not found"));
+        return facilityRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
     }
 
     public Facility createFacility(Facility facility) {
+        if (facility.getStatus() == null) {
+            facility.setStatus("ACTIVE");
+        }
         return facilityRepository.save(facility);
     }
 
     public Facility updateFacility(Long id, Facility facilityDetails) {
-        Facility facility = getFacilityById(id);
-        facility.setName(facilityDetails.getName());
-        facility.setType(facilityDetails.getType());
-        facility.setCapacity(facilityDetails.getCapacity());
-        facility.setLocation(facilityDetails.getLocation());
-        facility.setAvailableFrom(facilityDetails.getAvailableFrom());
-        facility.setAvailableTo(facilityDetails.getAvailableTo());
-        facility.setStatus(facilityDetails.getStatus());
-        return facilityRepository.save(facility);
+        Facility existing = getFacilityById(id);
+        existing.setName(facilityDetails.getName());
+        existing.setType(facilityDetails.getType());
+        existing.setCapacity(facilityDetails.getCapacity());
+        existing.setLocation(facilityDetails.getLocation());
+        existing.setAvailableFrom(facilityDetails.getAvailableFrom());
+        existing.setAvailableTo(facilityDetails.getAvailableTo());
+        existing.setStatus(facilityDetails.getStatus());
+        return facilityRepository.save(existing);
     }
 
     public void deleteFacility(Long id) {
@@ -45,5 +47,9 @@ public class FacilityService {
 
     public List<Facility> searchByLocation(String location) {
         return facilityRepository.findByLocation(location);
+    }
+
+    public List<Facility> getActiveFacilities() {
+        return facilityRepository.findByStatus("ACTIVE");
     }
 }

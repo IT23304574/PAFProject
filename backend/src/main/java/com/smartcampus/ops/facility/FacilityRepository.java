@@ -1,4 +1,4 @@
-package com.example.backend.facility;
+package com.smartcampus.ops.facility;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
