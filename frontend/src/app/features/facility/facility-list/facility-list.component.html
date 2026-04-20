@@ -1,0 +1,63 @@
+<div class="facility-container">
+  <h2>Facilities Management</h2>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div class="search-section">
+    <h3>Search Facilities</h3>
+    <div class="search-row">
+      <input type="text" [(ngModel)]="searchType" placeholder="Search by Type" class="search-input">
+      <button (click)="searchByType()" class="btn btn-primary">Search</button>
+    </div>
+    <div class="search-row">
+      <input type="text" [(ngModel)]="searchLocation" placeholder="Search by Location" class="search-input">
+      <button (click)="searchByLocation()" class="btn btn-primary">Search</button>
+    </div>
+    <button (click)="clearSearch()" class="btn btn-secondary">Clear</button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    Loading facilities...
+  </div>
+
+  <table *ngIf="!isLoading" class="facility-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Capacity</th>
+        <th>Location</th>
+        <th>Available From</th>
+        <th>Available To</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let facility of filteredFacilities">
+        <td>{{ facility.id }}</td>
+        <td>{{ facility.name }}</td>
+        <td>{{ facility.type }}</td>
+        <td>{{ facility.capacity }}</td>
+        <td>{{ facility.location }}</td>
+        <td>{{ facility.availableFrom }}</td>
+        <td>{{ facility.availableTo }}</td>
+        <td>
+          <span [class]="facility.status === 'ACTIVE' ? 'status-active' : 'status-inactive'">
+            {{ facility.status }}
+          </span>
+        </td>
+        <td>
+          <button (click)="deleteFacility(facility.id!)" class="btn btn-danger">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+   </table>
+
+  <div *ngIf="!isLoading && filteredFacilities.length === 0" class="no-data">
+    No facilities found.
+  </div>
+</div>
