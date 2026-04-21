@@ -52,7 +52,7 @@
       <button type="submit" class="btn-primary" [disabled]="isLoading">
         {{ isLoading ? 'Saving...' : (isEditMode ? 'Update' : 'Create') }}
       </button>
-      <button type="button" class="btn-secondary" (click)="router.navigate(['/facilities'])">
+      <button type="button" class="btn-secondary" (click)="goBack()">
         Cancel
       </button>
     </div>
