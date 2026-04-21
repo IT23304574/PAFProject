@@ -47,5 +47,12 @@ public class NotificationController {
         return ResponseEntity.noContent().build();
     }
 
-  
+    // MARK ONE
+    @PutMapping("/{id}/read")
+    public ResponseEntity<Void> markOne(@PathVariable String id,
+                                        @RequestParam String userId) {
+        service.markAsRead(id, userId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
