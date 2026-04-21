@@ -41,6 +41,6 @@ public class Notification {
     public boolean isRead() { return read; }
     public Instant getCreatedAt() { return createdAt; }
 
-    
+    public void setRead(boolean read) { this.read = read; }
     
 }
