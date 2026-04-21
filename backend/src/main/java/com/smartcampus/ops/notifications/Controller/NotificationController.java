@@ -28,5 +28,17 @@ public class NotificationController {
         return ResponseEntity.ok(service.getUnread(userId));
     }
 
+    // CREATE
+    @PostMapping
+    public ResponseEntity<Notification> create(@RequestBody Notification req) {
+        Notification n = service.create(
+                req.getUserId(),
+                req.getTitle(),
+                req.getMessage(),
+                req.getType()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(n);
+    }
+
    
 }
