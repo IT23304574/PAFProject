@@ -40,5 +40,12 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(n);
     }
 
-   
+    // MARK ALL
+    @PutMapping("/{userId}/read-all")
+    public ResponseEntity<Void> markAll(@PathVariable String userId) {
+        service.markAllAsRead(userId);
+        return ResponseEntity.noContent().build();
+    }
+
+  
 }
