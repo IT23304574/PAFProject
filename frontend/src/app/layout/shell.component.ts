@@ -16,6 +16,7 @@ import { AuthService } from '../features/auth/auth.service';
             <h1>🏫 Smart Campus Ops Hub</h1>
           </div>
           <nav class="nav-menu">
+            <a routerLink="/facilities" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Facilities</a>
             <a routerLink="/resources" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Resources</a>
             <a routerLink="/bookings" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Bookings</a>
             <a routerLink="/tickets" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Tickets</a>
@@ -79,6 +80,8 @@ import { AuthService } from '../features/auth/auth.service';
       border-bottom: 2px solid transparent;
       transition: all 0.2s;
       font-weight: 500;
+      text-decoration: none;
+      color: var(--gray-700);
     }
 
     .nav-menu a:hover {
@@ -132,6 +135,18 @@ import { AuthService } from '../features/auth/auth.service';
       margin: 0;
       font-size: 13px;
     }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
   `]
 })
 export class ShellComponent implements OnInit {
@@ -150,16 +165,16 @@ export class ShellComponent implements OnInit {
     const userStr = localStorage.getItem('user');
     if (userStr && userStr !== 'undefined') {
       const user = JSON.parse(userStr);
-      if (user.id && user.id.match(/^[0-9a-fA-F]{24}$/)) { // Validate user ID format
+      if (user.id && user.id.match(/^[0-9a-fA-F]{24}$/)) {
         this.userName = user.fullName || user.username;
         this.currentUserId = user.id;
         console.log('Current Session User ID:', this.currentUserId);
       } else {
-        this.logout(); // Invalid user ID in localStorage, force logout
+        this.logout();
       }
     } else {
       this.userName = null;
-      this.currentUserId = null; // Ensure currentUserId is also nullified
+      this.currentUserId = null;
     }
   }
 

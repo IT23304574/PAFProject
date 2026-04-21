@@ -32,7 +32,7 @@ export class FacilityFormComponent implements OnInit {
   constructor(
     private facilityService: FacilityService,
     private route: ActivatedRoute,
-    private router: Router
+    public router: Router  // 👈 'private' වෙනුවට 'public' කරන්න
   ) {}
 
   ngOnInit(): void {
@@ -90,5 +90,9 @@ export class FacilityFormComponent implements OnInit {
         }
       });
     }
+  }
+
+  goBack(): void {
+    this.router.navigate(['/facilities']);
   }
 }
