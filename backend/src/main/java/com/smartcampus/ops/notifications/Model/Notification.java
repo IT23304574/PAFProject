@@ -32,7 +32,7 @@ public class Notification {
         this.createdAt = Instant.now();
     }
 
-    // getters
+    // getters & setters
     public String getId() { return id; }
     public String getUserId() { return userId; }
     public String getTitle() { return title; }
@@ -41,6 +41,6 @@ public class Notification {
     public boolean isRead() { return read; }
     public Instant getCreatedAt() { return createdAt; }
 
-    // setter
-    public void setRead(boolean read) { this.read = read; }
+    
+    
 }
