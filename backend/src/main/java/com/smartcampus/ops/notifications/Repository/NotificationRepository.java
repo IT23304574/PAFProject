@@ -1,4 +1,4 @@
-package com.smartcampus.ops.notifications;
+package com.smartcampus.ops.notifications.Repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

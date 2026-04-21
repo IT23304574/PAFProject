@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.smartcampus.ops.notifications.NotificationRepository;
 import com.smartcampus.ops.notifications.Model.Notification;
+import com.smartcampus.ops.notifications.Repository.NotificationRepository;
 
 import java.util.List;
 
