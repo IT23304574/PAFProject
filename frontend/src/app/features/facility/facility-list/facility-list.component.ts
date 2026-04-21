@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { FacilityService, Facility } from '../facility.service';
 
 @Component({
@@ -18,7 +19,10 @@ export class FacilityListComponent implements OnInit {
   isLoading: boolean = false;
   errorMessage: string = '';
 
-  constructor(private facilityService: FacilityService) { }
+  constructor(
+    private facilityService: FacilityService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loadFacilities();
@@ -90,5 +94,15 @@ export class FacilityListComponent implements OnInit {
         }
       });
     }
+  }
+
+  // Add new facility
+  addFacility(): void {
+    this.router.navigate(['/facilities/add']);
+  }
+
+  // Edit facility
+  editFacility(id: number): void {
+    this.router.navigate(['/facilities/edit', id]);
   }
 }
