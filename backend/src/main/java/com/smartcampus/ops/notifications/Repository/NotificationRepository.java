@@ -1,12 +1,13 @@
-package com.smartcampus.ops.notifications.Repository;
+package com.smartcampus.ops.notifications.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-
-import com.smartcampus.ops.notifications.Model.Notification;
+import com.smartcampus.ops.notifications.model.Notification;
 
 import java.util.List;
 
 public interface NotificationRepository extends MongoRepository<Notification, String> {
-  List<Notification> findByUserIdAndRead(String userId, boolean read);
-  List<Notification> findByUserId(String userId);
+
+    List<Notification> findByUserIdAndRead(String userId, boolean read);
+
+    List<Notification> findByUserIdOrderByCreatedAtDesc(String userId);
 }
