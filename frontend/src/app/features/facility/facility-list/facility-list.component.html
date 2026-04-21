@@ -36,25 +36,28 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody>
-      <tr *ngFor="let facility of filteredFacilities">
-        <td>{{ facility.id }}</td>
-        <td>{{ facility.name }}</td>
-        <td>{{ facility.type }}</td>
-        <td>{{ facility.capacity }}</td>
-        <td>{{ facility.location }}</td>
-        <td>{{ facility.availableFrom }}</td>
-        <td>{{ facility.availableTo }}</td>
-        <td>
-          <span [class]="facility.status === 'ACTIVE' ? 'status-active' : 'status-inactive'">
-            {{ facility.status }}
-          </span>
-        </td>
-        <td>
-          <button (click)="deleteFacility(facility.id!)" class="btn btn-danger">Delete</button>
-        </td>
-      </tr>
-    </tbody>
+    <th>Actions</th>
+...
+<tbody>
+  <tr *ngFor="let facility of filteredFacilities">
+    <td>{{ facility.id }}</td>
+    <td>{{ facility.name }}</td>
+    <td>{{ facility.type }}</td>
+    <td>{{ facility.capacity }}</td>
+    <td>{{ facility.location }}</td>
+    <td>{{ facility.availableFrom }}</td>
+    <td>{{ facility.availableTo }}</td>
+    <td>
+      <span [class]="facility.status === 'ACTIVE' ? 'status-active' : 'status-inactive'">
+        {{ facility.status }}
+      </span>
+    </td>
+    <td>
+      <button (click)="editFacility(facility.id!)" class="btn-warning">Edit</button>
+      <button (click)="deleteFacility(facility.id!)" class="btn-danger">Delete</button>
+    </td>
+  </tr>
+</tbody>
    </table>
 
   <div *ngIf="!isLoading && filteredFacilities.length === 0" class="no-data">
