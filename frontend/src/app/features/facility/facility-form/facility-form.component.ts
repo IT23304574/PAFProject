@@ -22,7 +22,7 @@ export class FacilityFormComponent implements OnInit {
     status: 'ACTIVE'
   };
   isEditMode = false;
-  facilityId: number | null = null;
+  facilityId: string | null = null;  // 👈 Changed to string
   isLoading = false;
   errorMessage = '';
 
@@ -32,14 +32,14 @@ export class FacilityFormComponent implements OnInit {
   constructor(
     private facilityService: FacilityService,
     private route: ActivatedRoute,
-    public router: Router  // 👈 'private' වෙනුවට 'public' කරන්න
+    public router: Router
   ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
-      this.facilityId = +id;
+      this.facilityId = id;
       this.loadFacility();
     }
   }
