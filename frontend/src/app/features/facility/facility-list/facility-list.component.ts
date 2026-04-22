@@ -35,6 +35,7 @@ export class FacilityListComponent implements OnInit {
         this.facilities = data;
         this.filteredFacilities = data;
         this.isLoading = false;
+        console.log('Facilities loaded:', data);
       },
       error: (err) => {
         this.errorMessage = 'Failed to load facilities';
@@ -82,7 +83,7 @@ export class FacilityListComponent implements OnInit {
     this.filteredFacilities = this.facilities;
   }
 
-  deleteFacility(id: number): void {
+  deleteFacility(id: string): void {  // 👈 Changed to string
     if (confirm('Are you sure you want to delete this facility?')) {
       this.facilityService.deleteFacility(id).subscribe({
         next: () => {
@@ -96,13 +97,11 @@ export class FacilityListComponent implements OnInit {
     }
   }
 
-  // Add new facility
   addFacility(): void {
     this.router.navigate(['/facilities/add']);
   }
 
-  // Edit facility
-  editFacility(id: number): void {
+  editFacility(id: string): void {  // 👈 Changed to string
     this.router.navigate(['/facilities/edit', id]);
   }
 }

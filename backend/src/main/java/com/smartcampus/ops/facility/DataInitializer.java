@@ -15,10 +15,8 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Check if database is empty
         if (facilityRepository.count() == 0) {
             
-            // Sample Facilities
             List<Facility> facilities = Arrays.asList(
                 new Facility("Hall A", "LECTURE_HALL", 100, "Building 1", 
                             LocalTime.of(8, 0), LocalTime.of(18, 0), "ACTIVE"),
@@ -39,7 +37,7 @@ public class DataInitializer implements CommandLineRunner {
             );
             
             facilityRepository.saveAll(facilities);
-            System.out.println("✅ Sample facilities data initialized!");
+            System.out.println("✅ Sample facilities data initialized in MongoDB!");
         }
     }
 }

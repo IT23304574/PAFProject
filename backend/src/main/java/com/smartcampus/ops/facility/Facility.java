@@ -1,40 +1,35 @@
 package com.smartcampus.ops.facility;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.LocalTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "facilities")
+@Document(collection = "facilities")
 public class Facility {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
+    private String id;
+    
+    @Field("name")
     private String name;
-
-    @Column(nullable = false)
+    
+    @Field("type")
     private String type;
-
+    
+    @Field("capacity")
     private Integer capacity;
-
-    @Column(nullable = false)
+    
+    @Field("location")
     private String location;
-
-    @Column(name = "available_from")
+    
+    @Field("available_from")
     private LocalTime availableFrom;
-
-    @Column(name = "available_to")
+    
+    @Field("available_to")
     private LocalTime availableTo;
-
-    @Column(nullable = false)
+    
+    @Field("status")
     private String status;
 
     public Facility() {}
@@ -51,7 +46,7 @@ public class Facility {
     }
 
     // Getters
-    public Long getId() { return id; }
+    public String getId() { return id; }
     public String getName() { return name; }
     public String getType() { return type; }
     public Integer getCapacity() { return capacity; }
@@ -61,7 +56,7 @@ public class Facility {
     public String getStatus() { return status; }
 
     // Setters
-    public void setId(Long id) { this.id = id; }
+    public void setId(String id) { this.id = id; }
     public void setName(String name) { this.name = name; }
     public void setType(String type) { this.type = type; }
     public void setCapacity(Integer capacity) { this.capacity = capacity; }
