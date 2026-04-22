@@ -2,7 +2,7 @@ package com.smartcampus.ops.notifications.controller;
 
 import com.smartcampus.ops.notifications.model.Notification;
 import com.smartcampus.ops.notifications.service.NotificationService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +11,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/notifications")
 @CrossOrigin
-@RequiredArgsConstructor
 public class NotificationController {
 
     private final NotificationService service;
+
+    // ✅ MANUAL CONSTRUCTOR (IMPORTANT)
+    public NotificationController(NotificationService service) {
+        this.service = service;
+    }
 
     // GET ALL
     @GetMapping("/{userId}")
