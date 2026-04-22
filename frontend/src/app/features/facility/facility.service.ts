@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Facility {
-  id?: number;
+  id?: string;  // 👈 Changed from number to string (MongoDB ObjectId)
   name: string;
   type: string;
   capacity: number;
@@ -25,7 +25,7 @@ export class FacilityService {
     return this.http.get<Facility[]>(this.apiUrl);
   }
 
-  getFacilityById(id: number): Observable<Facility> {
+  getFacilityById(id: string): Observable<Facility> {
     return this.http.get<Facility>(`${this.apiUrl}/${id}`);
   }
 
@@ -33,11 +33,11 @@ export class FacilityService {
     return this.http.post<Facility>(this.apiUrl, facility);
   }
 
-  updateFacility(id: number, facility: Facility): Observable<Facility> {
+  updateFacility(id: string, facility: Facility): Observable<Facility> {
     return this.http.put<Facility>(`${this.apiUrl}/${id}`, facility);
   }
 
-  deleteFacility(id: number): Observable<void> {
+  deleteFacility(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
