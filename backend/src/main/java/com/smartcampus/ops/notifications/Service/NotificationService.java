@@ -2,16 +2,19 @@ package com.smartcampus.ops.notifications.service;
 
 import com.smartcampus.ops.notifications.model.Notification;
 import com.smartcampus.ops.notifications.repository.NotificationRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class NotificationService {
 
     private final NotificationRepository repository;
+
+    // ✅ CONSTRUCTOR (VERY IMPORTANT)
+    public NotificationService(NotificationRepository repository) {
+        this.repository = repository;
+    }
 
     public Notification create(String userId, String title, String message, String type) {
         Notification notification = new Notification(userId, title, message, type);
