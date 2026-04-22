@@ -37,8 +37,7 @@ public class BookingController {
       log.info("DATABASE READ: userId={} | Count={} | TotalInDB={}", userId, list.size(), bookingRepository.count());
       return list;
     } catch (Exception e) {
-      log.error("Error fetching bookings for user {}: {}", userId, e.getMessage());
-      e.printStackTrace(); // This will show the real error in your terminal
+      log.error("Error fetching bookings for user {}: {}", userId, e.getMessage(), e);
       throw e;
     }
   }
