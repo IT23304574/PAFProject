@@ -1,10 +1,16 @@
 <div class="facility-container">
-  <h2>Facilities Management</h2>
+  <!-- Header with Add Button -->
+  <div class="header-section">
+    <h2>Facilities Management</h2>
+    <button (click)="addFacility()" class="btn-add">+ Add New Facility</button>
+  </div>
 
+  <!-- Error Message -->
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>
 
+  <!-- Search Section -->
   <div class="search-section">
     <h3>Search Facilities</h3>
     <div class="search-row">
@@ -18,10 +24,12 @@
     <button (click)="clearSearch()" class="btn btn-secondary">Clear</button>
   </div>
 
+  <!-- Loading Indicator -->
   <div *ngIf="isLoading" class="loading">
     Loading facilities...
   </div>
 
+  <!-- Facilities Table -->
   <table *ngIf="!isLoading" class="facility-table">
     <thead>
       <tr>
@@ -36,30 +44,29 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <th>Actions</th>
-...
-<tbody>
-  <tr *ngFor="let facility of filteredFacilities">
-    <td>{{ facility.id }}</td>
-    <td>{{ facility.name }}</td>
-    <td>{{ facility.type }}</td>
-    <td>{{ facility.capacity }}</td>
-    <td>{{ facility.location }}</td>
-    <td>{{ facility.availableFrom }}</td>
-    <td>{{ facility.availableTo }}</td>
-    <td>
-      <span [class]="facility.status === 'ACTIVE' ? 'status-active' : 'status-inactive'">
-        {{ facility.status }}
-      </span>
-    </td>
-    <td>
-      <button (click)="editFacility(facility.id!)" class="btn-warning">Edit</button>
-      <button (click)="deleteFacility(facility.id!)" class="btn-danger">Delete</button>
-    </td>
-  </tr>
-</tbody>
+    <tbody>
+      <tr *ngFor="let facility of filteredFacilities">
+        <td>{{ facility.id }}</td>
+        <td>{{ facility.name }}</td>
+        <td>{{ facility.type }}</td>
+        <td>{{ facility.capacity }}</td>
+        <td>{{ facility.location }}</td>
+        <td>{{ facility.availableFrom }}</td>
+        <td>{{ facility.availableTo }}</td>
+        <td>
+          <span [class]="facility.status === 'ACTIVE' ? 'status-active' : 'status-inactive'">
+            {{ facility.status }}
+          </span>
+        </td>
+        <td>
+          <button (click)="editFacility(facility.id!)" class="btn-warning">Edit</button>
+          <button (click)="deleteFacility(facility.id!)" class="btn-danger">Delete</button>
+        </td>
+      </tr>
+    </tbody>
    </table>
 
+  <!-- No Data Message -->
   <div *ngIf="!isLoading && filteredFacilities.length === 0" class="no-data">
     No facilities found.
   </div>
