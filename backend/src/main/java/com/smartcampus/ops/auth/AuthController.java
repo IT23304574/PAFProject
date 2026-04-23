@@ -18,7 +18,7 @@ public class AuthController {
 
   private final NetHttpTransport transport = new NetHttpTransport();
   private final GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-  @Value("${google.client.id:407408718192.apps.googleusercontent.com}")
+  @Value("${google.client.id:725051219392-u8oac67c5dusdgb9ht9q3u683iss1lfl.apps.googleusercontent.com}")
   private String googleClientId;
 
   @Autowired

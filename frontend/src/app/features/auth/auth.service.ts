@@ -23,10 +23,14 @@ export class AuthService {
     return this.http.post<any>(`${API_BASE}/auth/register`, user);
   }
 
-  loginWithGoogleIdToken(idToken: string) {
-    return this.http.post<any>(`${API_BASE}/auth/google`, { idToken }).pipe(
+  loginWithGoogleIdToken(token: string) {
+    console.log('Sending Google Token to backend...');
+    // Sending as 'idToken' is the standard for most Spring Boot tutorials/libraries
+    return this.http.post<any>(`${API_BASE}/auth/google`, { 
+      idToken: token,
+      token: token 
+    }).pipe(
       tap(user => {
-        // Store user info and set a placeholder token
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('sc_token', 'logged_in');
         this.store.token = 'logged_in';

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { AuthService } from './auth.service';
@@ -70,31 +70,65 @@ declare var google: any;
     .google-btn-container { display: flex; justify-content: center; }
   `]
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   fullName = '';
   email = '';
   password = '';
   isLoading = false;
+  private googleInitInterval?: ReturnType<typeof setInterval>;
 
   constructor(
     public toast: ToastService,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit() {
-    this.initGoogleAuth();
+    const isLibraryLoaded = !!(window as any).google?.accounts?.id;
+    
+    if (!isLibraryLoaded) {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => this.waitForButtonAndInit();
+      document.head.appendChild(script);
+    } else {
+      this.waitForButtonAndInit();
+    }
+  }
+
+  private waitForButtonAndInit() {
+    this.googleInitInterval = setInterval(() => {
+      const g = (window as any).google?.accounts?.id;
+      const btn = document.getElementById('googleBtnReg');
+      
+      if (g && btn) {
+        this.initGoogleAuth();
+        clearInterval(this.googleInitInterval);
+      }
+    }, 100);
+  }
+
+  ngOnDestroy() {
+    if (this.googleInitInterval) {
+      clearInterval(this.googleInitInterval);
+    }
   }
 
   initGoogleAuth() {
     if (typeof google !== 'undefined') {
       google.accounts.id.initialize({
-        client_id: '407408718192.apps.googleusercontent.com',
-        callback: (response: any) => this.handleGoogleLogin(response.credential)
+        client_id: '725051219392-u8oac67c5dusdgb9ht9q3u683iss1lfl.apps.googleusercontent.com',
+        callback: (response: any) => this.ngZone.run(() => this.handleGoogleLogin(response.credential)),
+        auto_select: false,
+        ux_mode: 'popup',
+        context: 'signup'
       });
       google.accounts.id.renderButton(
         document.getElementById('googleBtnReg'),
-        { theme: 'outline', size: 'large', width: '100%' }
+        { theme: 'outline', size: 'large', width: 350, shape: 'rectangular', text: 'signup_with' }
       );
     }
   }
@@ -121,17 +155,24 @@ export class RegisterComponent implements OnInit {
   }
 
   handleGoogleLogin(token: string) {
-    this.isLoading = true;
-    this.auth.loginWithGoogleIdToken(token).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.toast.show('✅ Login successful!');
-        this.router.navigate(['/resources']);
-      },
-      error: (e) => {
-        this.isLoading = false;
-        this.toast.show('❌ Login failed: ' + (e?.error?.detail ?? e.message ?? 'Unknown error'));
-      }
+    if (!token) {
+      console.error('Google Auth returned an empty token.');
+      return;
+    }
+
+    this.ngZone.run(() => {
+      this.isLoading = true;
+      this.auth.loginWithGoogleIdToken(token).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.toast.show('✅ Login successful!');
+          this.router.navigate(['/resources']);
+        },
+        error: (e) => {
+          this.isLoading = false;
+          this.toast.show('❌ Login failed: ' + (e?.error?.detail ?? e.message ?? 'Unknown error'));
+        }
+      });
     });
   }
 }
