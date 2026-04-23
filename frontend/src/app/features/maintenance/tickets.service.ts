@@ -18,17 +18,20 @@ export interface Ticket {
 export class TicketsService {
   constructor(private http: HttpClient) {}
 
+  // Fixed path: /ticket/me
   mine(userId: string): Observable<Ticket[]> {
-    return this.http.get<Ticket[]>(`${API_BASE}/tickets/me`, { params: { userId } });
+    return this.http.get<Ticket[]>(`${API_BASE}/ticket/me`, { params: { userId } });
   }
 
+  // Fixed path: /ticket
   create(payload: { resourceId: string; category: string; priority: string; description: string; userId: string }): Observable<Ticket> {
-    return this.http.post<Ticket>(`${API_BASE}/tickets`, payload);
+    return this.http.post<Ticket>(`${API_BASE}/ticket`, payload);
   }
 
+  // Fixed path: /ticket/${ticketId}/attachments
   upload(ticketId: string, file: File) {
     const form = new FormData();
     form.append('file', file);
-    return this.http.post<Ticket>(`${API_BASE}/tickets/${ticketId}/attachments`, form);
+    return this.http.post<Ticket>(`${API_BASE}/ticket/${ticketId}/attachments`, form);
   }
 }
