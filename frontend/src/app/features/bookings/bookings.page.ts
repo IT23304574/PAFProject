@@ -13,7 +13,7 @@ import { ToastService } from '../../core/toast.service';
   template: `
     <div class="page-header">
       <h1>📅 My Bookings</h1>
-      <p class="page-subtitle">Manage your resource bookings and reservations</p>
+      <p class="page-subtitle">Manage your facility bookings and reservations</p>
     </div>
 
     <div class="booking-form-card">
