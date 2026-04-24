@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/bookings")
@@ -50,6 +52,19 @@ public class BookingController {
   public Booking get(@PathVariable String id) {
     return bookingRepository.findById(id)
       .orElseThrow(() -> new com.smartcampus.ops.common.NotFoundException("Booking not found"));
+  }
+
+  @GetMapping("/occupancy")
+  public Map<String, Long> getOccupancy(@RequestParam Instant start, @RequestParam Instant end) {
+    // This helper endpoint allows the frontend to see how many people are in each facility
+    // for a specific time range to calculate "Remaining Capacity"
+    var facilities = facilityRepository.findAll();
+    Map<String, Long> occupancyMap = new HashMap<>();
+    for (var f : facilities) {
+      long count = bookingRepository.countOverlappingBookings(f.getId(), start, end);
+      occupancyMap.put(f.getId(), count);
+    }
+    return occupancyMap;
   }
 
   @PostMapping

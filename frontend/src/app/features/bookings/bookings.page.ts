@@ -22,10 +22,10 @@ import { ToastService } from '../../core/toast.service';
         <div class="form-row">
           <div class="form-group">
             <label for="resourceId">Facility Name</label>
-            <select id="resourceId" [(ngModel)]="resourceId" name="resourceId" required>
+            <select id="resourceId" [(ngModel)]="resourceId" name="resourceId" required (change)="refreshOccupancy()">
               <option value="" disabled selected>Select a facility</option>
               <option *ngFor="let res of facilities" [value]="res.id">
-                {{ res.name }} ({{ res.type }}) - Capacity: {{ res.capacity }}
+                {{ res.name }} - Available: {{ getAvailableCount(res) }} / {{ res.capacity }}
               </option>
             </select>
           </div>
@@ -36,6 +36,7 @@ import { ToastService } from '../../core/toast.service';
               type="datetime-local"
               [(ngModel)]="startTime"
               name="startTime"
+              (ngModelChange)="refreshOccupancy()"
               required
             />
           </div>
@@ -46,6 +47,7 @@ import { ToastService } from '../../core/toast.service';
               type="datetime-local"
               [(ngModel)]="endTime"
               name="endTime"
+              (ngModelChange)="refreshOccupancy()"
               required
             />
           </div>
@@ -376,6 +378,7 @@ import { ToastService } from '../../core/toast.service';
 export class BookingsPage implements OnInit {
   bookings: Booking[] = [];
   facilities: any[] = [];
+  occupancyMap: { [id: string]: number } = {};
   resourceId = '';
   startTime = '';
   endTime = '';
@@ -399,6 +402,32 @@ export class BookingsPage implements OnInit {
       next: (r: any[]) => this.facilities = r,
       error: (e: any) => console.error('Failed to load facilities', e)
     });
+  }
+
+  refreshOccupancy() {
+    if (!this.startTime || !this.endTime) return;
+
+    const start = new Date(this.startTime);
+    const end = new Date(this.endTime);
+
+    if (start >= end) return;
+
+    // Call backend to get current occupancy for all facilities in this time slot
+    const params = { 
+      start: start.toISOString(), 
+      end: end.toISOString() 
+    };
+
+    this.api.getOccupancy(params.start, params.end).subscribe({
+      next: (map: any) => this.occupancyMap = map,
+      error: (err) => console.error('Could not fetch occupancy', err)
+    });
+  }
+
+  getAvailableCount(facility: any): number {
+    const occupied = this.occupancyMap[facility.id] || 0;
+    const available = facility.capacity - occupied;
+    return available > 0 ? available : 0;
   }
 
   load() {
