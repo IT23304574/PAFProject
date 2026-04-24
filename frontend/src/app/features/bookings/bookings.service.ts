@@ -15,13 +15,19 @@ export interface Booking {
 
 @Injectable({ providedIn: 'root' })
 export class BookingsService {
+  private apiUrl = `${API_BASE}/bookings`;
+
   constructor(private http: HttpClient) {}
 
   mine(userId: string): Observable<Booking[]> {
-    return this.http.get<Booking[]>(`${API_BASE}/bookings/me`, { params: { userId } });
+    return this.http.get<Booking[]>(`${this.apiUrl}/me?userId=${userId}`);
   }
 
   create(resourceId: string, startTime: string, endTime: string, userId: string): Observable<Booking> {
-    return this.http.post<Booking>(`${API_BASE}/bookings`, { resourceId, startTime, endTime, userId });
+    return this.http.post<Booking>(this.apiUrl, { resourceId, startTime, endTime, userId });
+  }
+
+  getOccupancy(start: string, end: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/occupancy?start=${start}&end=${end}`);
   }
 }
