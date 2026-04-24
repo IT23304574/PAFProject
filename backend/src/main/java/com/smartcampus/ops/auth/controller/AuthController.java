@@ -2,15 +2,18 @@ package com.smartcampus.ops.auth.controller;
 
 import com.smartcampus.ops.auth.model.User;
 import com.smartcampus.ops.auth.service.AuthService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+    private AuthService authService;
+
+    // ✅ Constructor (instead of Lombok)
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/register")
     public String register(@RequestBody User user) {
