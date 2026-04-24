@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf, NgClass } from '@angular/common';
 import { BookingsService, Booking } from './bookings.service';
+import { FacilityService } from '../facility/facility.service';
+import { FacilityAnalyticsService } from '../facility/facility-analytics.service';
 import { ToastService } from '../../core/toast.service';
 
 @Component({
@@ -19,15 +21,13 @@ import { ToastService } from '../../core/toast.service';
       <form class="booking-form" (ngSubmit)="create()">
         <div class="form-row">
           <div class="form-group">
-            <label for="resourceId">Resource ID</label>
-            <input
-              id="resourceId"
-              type="text"
-              [(ngModel)]="resourceId"
-              name="resourceId"
-              placeholder="e.g., AUDITORIUM_001"
-              required
-            />
+            <label for="resourceId">Facility Name</label>
+            <select id="resourceId" [(ngModel)]="resourceId" name="resourceId" required>
+              <option value="" disabled selected>Select a facility</option>
+              <option *ngFor="let res of facilities" [value]="res.id">
+                {{ res.name }} ({{ res.type }}) - Capacity: {{ res.capacity }}
+              </option>
+            </select>
           </div>
           <div class="form-group">
             <label for="startTime">Start Time</label>
@@ -81,7 +81,7 @@ import { ToastService } from '../../core/toast.service';
         <div class="booking-card" *ngFor="let booking of bookings">
           <div class="booking-header">
             <div class="booking-resource">
-              <strong>{{ booking.resourceId }}</strong>
+              <strong>{{ getFacilityName(booking.resourceId) }}</strong>
             </div>
             <div class="booking-status" [ngClass]="getStatusClass(booking.status)">
               {{ booking.status }}
@@ -169,7 +169,7 @@ import { ToastService } from '../../core/toast.service';
       transition: border-color 0.2s;
     }
 
-    .form-group input:focus {
+    .form-group input:focus, .form-group select:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
@@ -375,16 +375,30 @@ import { ToastService } from '../../core/toast.service';
 })
 export class BookingsPage implements OnInit {
   bookings: Booking[] = [];
+  facilities: any[] = [];
   resourceId = '';
   startTime = '';
   endTime = '';
   loading = false;
 
-  constructor(public toast: ToastService, private api: BookingsService) {}
+  constructor(
+    public toast: ToastService, 
+    private api: BookingsService,
+    private facilityService: FacilityService,
+    private analyticsService: FacilityAnalyticsService
+  ) {}
 
   ngOnInit() {
     console.log('BookingsPage initialized');
     this.load();
+    this.loadFacilities();
+  }
+
+  loadFacilities() {
+    this.facilityService.getAllFacilities().subscribe({
+      next: (r: any[]) => this.facilities = r,
+      error: (e: any) => console.error('Failed to load facilities', e)
+    });
   }
 
   load() {
@@ -454,8 +468,17 @@ export class BookingsPage implements OnInit {
         this.endTime = '';
         this.load();
       },
-      error: (e: any) => this.toast.show('Create failed: ' + (e?.error?.detail ?? e?.error?.message ?? e.message))
+      error: (e: any) => {
+        console.error('Booking creation error:', e);
+        const msg = e?.error?.message || e?.error?.detail || e?.message || "An unknown error occurred";
+        this.toast.show('Create failed: ' + msg);
+      }
     });
+  }
+
+  getFacilityName(id: string): string {
+    const facility = this.facilities.find(f => f.id === id);
+    return facility ? facility.name : id;
   }
 
   getStatusClass(status: string): string {
