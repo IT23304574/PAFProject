@@ -82,7 +82,7 @@ import { ToastService } from '../../core/toast.service';
       <div class="bookings-grid" *ngIf="bookings.length > 0">
         <div class="booking-card" *ngFor="let booking of bookings">
           <div class="booking-header">
-            <div class="booking-resource">
+            <div class="booking-facility">
               <strong>{{ getFacilityName(booking.resourceId) }}</strong>
             </div>
             <div class="booking-status" [ngClass]="getStatusClass(booking.status)">
@@ -304,7 +304,7 @@ import { ToastService } from '../../core/toast.service';
       margin-bottom: 12px;
     }
 
-    .booking-resource {
+    .booking-facility {
       font-size: 16px;
       color: var(--gray-900);
     }

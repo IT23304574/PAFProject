@@ -1,5 +1,6 @@
 package com.smartcampus.ops.bookings;
 
+import com.smartcampus.ops.facility.Facility;
 import com.smartcampus.ops.facility.FacilityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,9 +59,9 @@ public class BookingController {
   public Map<String, Long> getOccupancy(@RequestParam Instant start, @RequestParam Instant end) {
     // This helper endpoint allows the frontend to see how many people are in each facility
     // for a specific time range to calculate "Remaining Capacity"
-    var facilities = facilityRepository.findAll();
+    List<Facility> facilities = facilityRepository.findAll();
     Map<String, Long> occupancyMap = new HashMap<>();
-    for (var f : facilities) {
+    for (Facility f : facilities) {
       long count = bookingRepository.countOverlappingBookings(f.getId(), start, end);
       occupancyMap.put(f.getId(), count);
     }
