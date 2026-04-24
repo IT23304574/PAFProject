@@ -17,7 +17,7 @@ import { AuthService } from '../features/auth/auth.service';
           </div>
           <nav class="nav-menu">
             <a routerLink="/facilities" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Facilities</a>
-            <a routerLink="/resources" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Resources</a>
+            
             <a routerLink="/bookings" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Bookings</a>
             <a routerLink="/tickets" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Tickets</a>
             <app-notifications-panel></app-notifications-panel>
