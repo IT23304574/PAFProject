@@ -5,9 +5,10 @@ import com.smartcampus.ops.notifications.service.NotificationService;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
+@PreAuthorize("hasRole('USER')")
 @RestController
 @RequestMapping("/api/notifications")
 @CrossOrigin
