@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FacilityService, Facility } from '../facility.service';
+import { AuthService } from '../../../core/auth.service';
 
 @Component({
   selector: 'app-facility-list',
@@ -21,7 +22,8 @@ export class FacilityListComponent implements OnInit {
 
   constructor(
     private facilityService: FacilityService,
-    private router: Router
+    private router: Router,
+    public authService: AuthService  // 👈 Add this
   ) { }
 
   ngOnInit(): void {
@@ -35,7 +37,6 @@ export class FacilityListComponent implements OnInit {
         this.facilities = data;
         this.filteredFacilities = data;
         this.isLoading = false;
-        console.log('Facilities loaded:', data);
       },
       error: (err) => {
         this.errorMessage = 'Failed to load facilities';
@@ -83,7 +84,7 @@ export class FacilityListComponent implements OnInit {
     this.filteredFacilities = this.facilities;
   }
 
-  deleteFacility(id: string): void {  // 👈 Changed to string
+  deleteFacility(id: string): void {
     if (confirm('Are you sure you want to delete this facility?')) {
       this.facilityService.deleteFacility(id).subscribe({
         next: () => {
@@ -101,7 +102,16 @@ export class FacilityListComponent implements OnInit {
     this.router.navigate(['/facilities/add']);
   }
 
-  editFacility(id: string): void {  // 👈 Changed to string
+  editFacility(id: string): void {
     this.router.navigate(['/facilities/edit', id]);
+  }
+
+  goToAdminDashboard(): void {
+    this.router.navigate(['/admin']);
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
