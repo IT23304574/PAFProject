@@ -4,15 +4,18 @@
 </div>
 
 <div class="facility-container">
-  <!-- Header with Admin Dashboard and Add Button -->
+  <!-- Header with Export Buttons -->
   <div class="header-section">
     <h2>🏫 Facilities Management</h2>
     <div class="header-buttons">
+      <button (click)="exportToExcel()" class="btn-excel">📊 Export Excel</button>
+      <button (click)="exportToPDF()" class="btn-pdf">📄 Export PDF</button>
       <button (click)="goToAdminDashboard()" class="btn-dashboard">📊 Admin Dashboard</button>
       <button (click)="addFacility()" class="btn-add">+ Add New Facility</button>
     </div>
   </div>
 
+  <!-- Rest of the code remains same -->
   <!-- Error Message -->
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
@@ -41,7 +44,6 @@
   <table *ngIf="!isLoading" class="facility-table">
     <thead>
       <tr>
-        <th>ID</th>
         <th>Name</th>
         <th>Type</th>
         <th>Capacity</th>
@@ -54,7 +56,6 @@
     </thead>
     <tbody>
       <tr *ngFor="let facility of filteredFacilities">
-        <td>{{ facility.id }}</td>
         <td>{{ facility.name }}</td>
         <td>{{ facility.type }}</td>
         <td>{{ facility.capacity }}</td>
