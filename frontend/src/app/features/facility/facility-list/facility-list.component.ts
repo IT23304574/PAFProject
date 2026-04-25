@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FacilityService, Facility } from '../facility.service';
 import { AuthService } from '../../../core/auth.service';
+import { ExportService, Facility as ExportFacility } from '../../../core/export.service';
 
 @Component({
   selector: 'app-facility-list',
@@ -23,7 +24,8 @@ export class FacilityListComponent implements OnInit {
   constructor(
     private facilityService: FacilityService,
     private router: Router,
-    public authService: AuthService  // 👈 Add this
+    public authService: AuthService,
+    private exportService: ExportService  // 👈 Add this
   ) { }
 
   ngOnInit(): void {
@@ -110,8 +112,34 @@ export class FacilityListComponent implements OnInit {
     this.router.navigate(['/admin']);
   }
 
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+  private getExportFacilities(): ExportFacility[] {
+    return this.filteredFacilities.map((facility) => ({
+      id: facility.id ?? '',
+      name: facility.name,
+      type: facility.type,
+      capacity: facility.capacity,
+      location: facility.location,
+      availableFrom: facility.availableFrom,
+      availableTo: facility.availableTo,
+      status: facility.status
+    }));
+  }
+
+  // Export to Excel
+  exportToExcel(): void {
+    if (this.filteredFacilities.length === 0) {
+      this.errorMessage = 'No data to export';
+      return;
+    }
+    this.exportService.exportToExcel(this.getExportFacilities(), 'facilities_export');
+  }
+
+  // Export to PDF
+  exportToPDF(): void {
+    if (this.filteredFacilities.length === 0) {
+      this.errorMessage = 'No data to export';
+      return;
+    }
+    this.exportService.exportToPDF(this.getExportFacilities(), 'Facilities Management Report');
   }
 }
