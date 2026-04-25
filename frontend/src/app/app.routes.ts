@@ -8,6 +8,8 @@ import { TicketsPage } from './features/maintenance/tickets.page';
 import { TestPage } from './features/test/test.page';
 import { FacilityListComponent } from './features/facility/facility-list/facility-list.component';
 import { FacilityFormComponent } from './features/facility/facility-form/facility-form.component';
+import { AnalyticsDashboardComponent } from './features/facility/analytics-dashboard/analytics-dashboard.component';
+import { AdminDashboardComponent } from './features/admin/admin-dashboard/admin-dashboard.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -21,6 +23,8 @@ export const routes: Routes = [
       { path: 'facilities', component: FacilityListComponent },
       { path: 'facilities/add', component: FacilityFormComponent },
       { path: 'facilities/edit/:id', component: FacilityFormComponent },
+      { path: 'facilities/analytics', component: AnalyticsDashboardComponent },
+      { path: 'admin', component: AdminDashboardComponent },
       { path: 'resources', component: ResourcesPage },
       { path: 'bookings', component: BookingsPage },
       { path: 'tickets', component: TicketsPage }
