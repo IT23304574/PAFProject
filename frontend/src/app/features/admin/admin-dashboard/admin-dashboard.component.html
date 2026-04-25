@@ -1,0 +1,116 @@
+<!-- Only visible to Admin -->
+<div *ngIf="!authService.isAdmin()" class="access-denied">
+  <h2>🚫 Access Denied</h2>
+  <p>You don't have permission to view this page.</p>
+</div>
+
+<div *ngIf="authService.isAdmin()" class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>📊 Admin Dashboard</h1>
+    <p>Welcome back, <strong>{{ authService.getCurrentUser()?.fullName }}</strong></p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!isLoading && !errorMessage" class="dashboard-content">
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card primary">
+        <div class="stat-icon">🏢</div>
+        <div class="stat-value">{{ totalFacilities }}</div>
+        <div class="stat-label">Total Facilities</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value">{{ activeFacilities }}</div>
+        <div class="stat-label">Active Facilities</div>
+      </div>
+      <div class="stat-card danger">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-value">{{ inactiveFacilities }}</div>
+        <div class="stat-label">Inactive Facilities</div>
+      </div>
+      <div class="stat-card info">
+        <div class="stat-icon">💺</div>
+        <div class="stat-value">{{ totalCapacity }}</div>
+        <div class="stat-label">Total Capacity</div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+      <!-- Facility Types Chart -->
+      <div class="chart-card">
+        <h3>📊 Facilities by Type</h3>
+        <div class="type-list">
+          <div *ngFor="let item of facilityTypes" class="type-item">
+            <span class="type-name">{{ item.type }}</span>
+            <div class="type-bar-container">
+              <div class="type-bar" [style.width.%]="(item.count / totalFacilities) * 100"></div>
+            </div>
+            <span class="type-count">{{ item.count }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Distribution -->
+      <div class="chart-card">
+        <h3>📈 Status Distribution</h3>
+        <div class="status-list">
+          <div *ngFor="let item of statusDistribution" class="status-item">
+            <span class="status-name" [class]="item.status === 'ACTIVE' ? 'status-active' : 'status-inactive'">
+              {{ item.status === 'ACTIVE' ? '🟢 ACTIVE' : '🔴 OUT OF SERVICE' }}
+            </span>
+            <div class="status-bar-container">
+              <div class="status-bar" [class.active]="item.status === 'ACTIVE'" [style.width.%]="(item.count / totalFacilities) * 100"></div>
+            </div>
+            <span class="status-count">{{ item.count }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Facilities Table -->
+    <div class="chart-card full-width">
+      <h3>📋 Recent Facilities</h3>
+      <table class="facility-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Capacity</th>
+            <th>Location</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let facility of facilities.slice(0, 5)">
+            <td>{{ facility.id | slice:0:8 }}...</td>
+            <td>{{ facility.name }}</td>
+            <td>{{ facility.type }}</td>
+            <td>{{ facility.capacity }}</td>
+            <td>{{ facility.location }}</td>
+            <td>
+              <span [class]="facility.status === 'ACTIVE' ? 'badge-active' : 'badge-inactive'">
+                {{ facility.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
