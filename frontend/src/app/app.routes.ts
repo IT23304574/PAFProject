@@ -18,7 +18,7 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'test' },
       { path: 'resources', component: ResourcesPage },
       { path: 'bookings', component: BookingsPage },
-      { path: 'tickets', component: TicketsPage }
+      { path: 'ticket', component: TicketsPage }
     ]
   }
 ];

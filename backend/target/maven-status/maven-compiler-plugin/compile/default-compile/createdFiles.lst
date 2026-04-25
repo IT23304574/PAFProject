@@ -5,13 +5,13 @@ com\smartcampus\ops\resources\ResourceController.class
 com\smartcampus\ops\auth\User.class
 com\smartcampus\ops\common\BadRequestException.class
 com\smartcampus\ops\bookings\BookingRepository.class
-com\smartcampus\ops\auth\SecurityConfig.class
 com\smartcampus\ops\notifications\NotificationController.class
 com\smartcampus\ops\notifications\NotificationRepository.class
 com\smartcampus\ops\auth\AuthController$LoginRequest.class
 com\smartcampus\ops\auth\LoginRequest.class
 com\smartcampus\ops\SmartCampusOpsApplication.class
 com\smartcampus\ops\ticket\TicketController.class
+com\smartcampus\ops\SecurityConfig.class
 com\smartcampus\ops\ticket\TicketRepository.class
 com\smartcampus\ops\auth\UserRepository.class
 com\smartcampus\ops\auth\LoginResponse.class
