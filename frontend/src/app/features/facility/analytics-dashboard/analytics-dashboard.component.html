@@ -1,0 +1,147 @@
+<!-- Only visible to Admin -->
+<div *ngIf="!authService.isAdmin()" class="access-denied">
+  <h2>🚫 Access Denied</h2>
+  <p>You don't have permission to view this page.</p>
+</div>
+
+<div *ngIf="authService.isAdmin()" class="analytics-container">
+  <!-- Header -->
+  <div class="analytics-header">
+    <h1>📊 Facility Analytics Dashboard</h1>
+    <p>View facility usage statistics and analytics</p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading analytics data...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!isLoading && !errorMessage">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card primary">
+        <div class="stat-icon">🏢</div>
+        <div class="stat-value">{{ totalFacilities }}</div>
+        <div class="stat-label">Total Facilities</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value">{{ activeFacilities }}</div>
+        <div class="stat-label">Active Facilities</div>
+      </div>
+      <div class="stat-card danger">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-value">{{ inactiveFacilities }}</div>
+        <div class="stat-label">Inactive Facilities</div>
+      </div>
+      <div class="stat-card info">
+        <div class="stat-icon">💺</div>
+        <div class="stat-value">{{ totalCapacity }}</div>
+        <div class="stat-label">Total Capacity</div>
+      </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="charts-row">
+      <!-- Facility Types Chart -->
+      <div class="chart-card">
+        <h3>📊 Facilities by Type</h3>
+        <div class="type-list">
+          <div *ngFor="let item of facilityTypes" class="type-item">
+            <span class="type-name">{{ item.type }}</span>
+            <div class="bar-container">
+              <div class="bar" [style.width.%]="item.percentage"></div>
+            </div>
+            <span class="type-count">{{ item.count }} ({{ item.percentage | number:'1.0-0' }}%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Distribution -->
+      <div class="chart-card">
+        <h3>📈 Status Distribution</h3>
+        <div class="status-list">
+          <div *ngFor="let item of statusDistribution" class="status-item">
+            <span class="status-name" [class]="item.status === 'ACTIVE' ? 'status-active' : 'status-inactive'">
+              {{ item.status === 'ACTIVE' ? '🟢 ACTIVE' : '🔴 OUT OF SERVICE' }}
+            </span>
+            <div class="bar-container">
+              <div class="bar" [class.active]="item.status === 'ACTIVE'" [style.width.%]="item.percentage"></div>
+            </div>
+            <span class="status-count">{{ item.count }} ({{ item.percentage | number:'1.0-0' }}%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="charts-row">
+      <!-- Most Booked Facilities -->
+      <div class="chart-card">
+        <h3>🔥 Most Booked Facilities</h3>
+        <div class="booked-list">
+          <div *ngFor="let item of mostBooked; let i = index" class="booked-item">
+            <span class="rank">{{ i + 1 }}</span>
+            <span class="booked-name">{{ item.name }}</span>
+            <div class="bar-container">
+              <div class="bar booked-bar" [style.width.%]="(item.bookings / 50) * 100"></div>
+            </div>
+            <span class="booked-count">{{ item.bookings }} bookings</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Peak Hours -->
+      <div class="chart-card">
+        <h3>⏰ Peak Booking Hours</h3>
+        <div class="peak-list">
+          <div *ngFor="let hour of peakHours" class="peak-item">
+            <span class="peak-time">{{ hour.time }}</span>
+            <div class="bar-container">
+              <div class="bar peak-bar" [style.width.%]="(hour.count / 50) * 100"></div>
+            </div>
+            <span class="peak-count">{{ hour.count }} bookings</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Facilities Table -->
+    <div class="chart-card full-width">
+      <h3>📋 All Facilities</h3>
+      <table class="facility-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Capacity</th>
+            <th>Location</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let facility of facilities">
+            <td>{{ facility.id | slice:0:8 }}...</td>
+            <td>{{ facility.name }}</td>
+            <td>{{ facility.type }}</td>
+            <td>{{ facility.capacity }}</td>
+            <td>{{ facility.location }}</td>
+            <td>
+              <span [class]="facility.status === 'ACTIVE' ? 'badge-active' : 'badge-inactive'">
+                {{ facility.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
