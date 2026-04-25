@@ -1,3 +1,31 @@
+<<<<<<< HEAD
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\auth\AuthController.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\auth\LoginRequest.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\auth\LoginResponse.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\auth\User.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\auth\UserRepository.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\bookings\Booking.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\bookings\BookingController.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\bookings\BookingRepository.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\bookings\LoginRequest.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\common\ApiError.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\common\BadRequestException.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\common\ConflictException.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\common\GlobalExceptionHandler.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\common\NotFoundException.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\notifications\Notification.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\notifications\NotificationController.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\notifications\NotificationRepository.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\notifications\SecurityConfig.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\resources\Resource.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\resources\ResourceController.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\resources\ResourceRepository.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\SecurityConfig.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\ticket\SmartCampusOpsApplication.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\ticket\Ticket.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\ticket\TicketController.java
+C:\Users\Vihara\Documents\GitHub\PAFProject\backend\src\main\java\com\smartcampus\ops\ticket\TicketRepository.java
+=======
 C:\Users\Dell\Desktop\smart-campus-ops-hub\backend\src\main\java\com\smartcampus\ops\auth\AuthController.java
 C:\Users\Dell\Desktop\smart-campus-ops-hub\backend\src\main\java\com\smartcampus\ops\auth\LoginRequest.java
 C:\Users\Dell\Desktop\smart-campus-ops-hub\backend\src\main\java\com\smartcampus\ops\auth\LoginResponse.java
@@ -33,3 +61,4 @@ C:\Users\Dell\Desktop\smart-campus-ops-hub\backend\src\main\java\com\smartcampus
 C:\Users\Dell\Desktop\smart-campus-ops-hub\backend\src\main\java\com\smartcampus\ops\tickets\Ticket.java
 C:\Users\Dell\Desktop\smart-campus-ops-hub\backend\src\main\java\com\smartcampus\ops\tickets\TicketController.java
 C:\Users\Dell\Desktop\smart-campus-ops-hub\backend\src\main\java\com\smartcampus\ops\tickets\TicketRepository.java
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c

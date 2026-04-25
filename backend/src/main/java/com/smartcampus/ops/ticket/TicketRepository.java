@@ -1,4 +1,4 @@
-package com.smartcampus.ops.tickets;
+package com.smartcampus.ops.ticket;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;

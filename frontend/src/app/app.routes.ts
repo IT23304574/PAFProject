@@ -21,7 +21,7 @@ export const routes: Routes = [
       { path: 'facilities/add', component: FacilityFormComponent },
       { path: 'facilities/edit/:id', component: FacilityFormComponent },
       { path: 'bookings', component: BookingsPage },
-      { path: 'tickets', component: TicketsPage }
+      { path: 'ticket', component: TicketsPage }
     ]
   }
 ];

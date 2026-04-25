@@ -1,4 +1,4 @@
-package com.smartcampus.ops.tickets;
+package com.smartcampus.ops.ticket;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;

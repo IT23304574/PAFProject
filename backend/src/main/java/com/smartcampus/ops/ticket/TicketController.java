@@ -1,4 +1,4 @@
-package com.smartcampus.ops.tickets;
+package com.smartcampus.ops.ticket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/tickets")
+@RequestMapping("/api/v1/ticket")
 @CrossOrigin
 public class TicketController {
   private static final Logger log = LoggerFactory.getLogger(TicketController.class);

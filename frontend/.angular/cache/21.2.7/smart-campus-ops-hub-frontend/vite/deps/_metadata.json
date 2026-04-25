@@ -1,61 +1,104 @@
 {
+<<<<<<< HEAD:frontend/.angular/cache/18.2.21/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
+  "hash": "d11a0176",
+  "configHash": "4af4bbf8",
+  "lockfileHash": "3e3eddb8",
+  "browserHash": "51cf6479",
+=======
   "hash": "6cfd4eeb",
   "configHash": "517a126b",
   "lockfileHash": "c20a8cf5",
   "browserHash": "bd3ba927",
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c:frontend/.angular/cache/21.2.7/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
+<<<<<<< HEAD:frontend/.angular/cache/18.2.21/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
+      "fileHash": "81e5b0d2",
+=======
       "fileHash": "c4cf6959",
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c:frontend/.angular/cache/21.2.7/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
       "needsInterop": false
     },
     "@angular/common/http": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
+<<<<<<< HEAD:frontend/.angular/cache/18.2.21/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
+      "fileHash": "2a42472e",
+=======
       "fileHash": "edfa057a",
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c:frontend/.angular/cache/21.2.7/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
+<<<<<<< HEAD:frontend/.angular/cache/18.2.21/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
+      "fileHash": "600da2c1",
+=======
       "fileHash": "ecbbdbac",
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c:frontend/.angular/cache/21.2.7/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
       "needsInterop": false
     },
     "@angular/core/rxjs-interop": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/rxjs-interop.mjs",
       "file": "@angular_core_rxjs-interop.js",
+<<<<<<< HEAD:frontend/.angular/cache/18.2.21/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
+      "fileHash": "268655fc",
+=======
       "fileHash": "bcc6d3e8",
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c:frontend/.angular/cache/21.2.7/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
+<<<<<<< HEAD:frontend/.angular/cache/18.2.21/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
+      "fileHash": "37e485c6",
+=======
       "fileHash": "476e6fd5",
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c:frontend/.angular/cache/21.2.7/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
+<<<<<<< HEAD:frontend/.angular/cache/18.2.21/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
+      "fileHash": "0cd142fc",
+=======
       "fileHash": "796823fa",
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c:frontend/.angular/cache/21.2.7/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
+<<<<<<< HEAD:frontend/.angular/cache/18.2.21/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
+      "fileHash": "fc34ec6e",
+=======
       "fileHash": "76090414",
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c:frontend/.angular/cache/21.2.7/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
       "needsInterop": false
     },
     "rxjs": {
       "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
       "file": "rxjs.js",
+<<<<<<< HEAD:frontend/.angular/cache/18.2.21/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
+      "fileHash": "1d882475",
+=======
       "fileHash": "7d27cd1a",
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c:frontend/.angular/cache/21.2.7/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
       "needsInterop": false
     },
     "zone.js": {
       "src": "../../../../../../node_modules/zone.js/fesm2015/zone.js",
       "file": "zone__js.js",
+<<<<<<< HEAD:frontend/.angular/cache/18.2.21/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
+      "fileHash": "c074fe24",
+=======
       "fileHash": "82ed615c",
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c:frontend/.angular/cache/21.2.7/smart-campus-ops-hub-frontend/vite/deps/_metadata.json
       "needsInterop": true
     }
   },

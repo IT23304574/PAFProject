@@ -19,7 +19,7 @@ import { AuthService } from '../features/auth/auth.service';
             <a routerLink="/facilities" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Facilities</a>
             
             <a routerLink="/bookings" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Bookings</a>
-            <a routerLink="/tickets" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Tickets</a>
+            <a routerLink="/ticket" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Tickets</a>
             <app-notifications-panel></app-notifications-panel>
             
             <div class="user-menu" *ngIf="userName; else loginBtn">
