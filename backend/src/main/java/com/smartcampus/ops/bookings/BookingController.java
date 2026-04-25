@@ -1,11 +1,15 @@
 package com.smartcampus.ops.bookings;
 
+import com.smartcampus.ops.facility.Facility;
+import com.smartcampus.ops.facility.FacilityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/bookings")
@@ -15,6 +19,9 @@ public class BookingController {
 
   @Autowired
   private BookingRepository bookingRepository;
+
+  @Autowired
+  private FacilityRepository facilityRepository;
 
   @GetMapping
   public List<Booking> all() {
@@ -37,8 +44,7 @@ public class BookingController {
       log.info("DATABASE READ: userId={} | Count={} | TotalInDB={}", userId, list.size(), bookingRepository.count());
       return list;
     } catch (Exception e) {
-      log.error("Error fetching bookings for user {}: {}", userId, e.getMessage());
-      e.printStackTrace(); // This will show the real error in your terminal
+      log.error("Error fetching bookings for user {}: {}", userId, e.getMessage(), e);
       throw e;
     }
   }
@@ -49,20 +55,47 @@ public class BookingController {
       .orElseThrow(() -> new com.smartcampus.ops.common.NotFoundException("Booking not found"));
   }
 
+  @GetMapping("/occupancy")
+  public Map<String, Long> getOccupancy(@RequestParam Instant start, @RequestParam Instant end) {
+    // This helper endpoint allows the frontend to see how many people are in each facility
+    // for a specific time range to calculate "Remaining Capacity"
+    List<Facility> facilities = facilityRepository.findAll();
+    Map<String, Long> occupancyMap = new HashMap<>();
+    for (Facility f : facilities) {
+      long count = bookingRepository.countOverlappingBookings(f.getId(), start, end);
+      occupancyMap.put(f.getId(), count);
+    }
+    return occupancyMap;
+  }
+
   @PostMapping
   public Booking create(@RequestBody Booking booking) {
-    log.info("Creating booking: User={}, Resource={}, Start={}", 
-        booking.userId, booking.resourceId, booking.startTime);
-
-    // If your frontend sends 'startDate' instead of 'startTime', 
-    // Jackson won't map it, and booking.startTime will be null.
     if (booking.resourceId == null || booking.startTime == null || booking.endTime == null || booking.userId == null) {
-      log.error("Missing required fields. Received: Resource={}, Start={}, End={}", 
-          booking.resourceId, booking.startTime, booking.endTime);
-      throw new com.smartcampus.ops.common.BadRequestException("resourceId, startTime, endTime, and userId are required");
+      throw new com.smartcampus.ops.common.BadRequestException("Error: All fields (resourceId, startTime, endTime, userId) are required.");
     }
 
-    // Set default values if not provided
+    // 1. Time Validation: Ensure end time is actually after start time
+    if (booking.endTime == null || !booking.endTime.isAfter(booking.startTime)) {
+      log.warn("Time validation failed: End time {} is before or equal to Start time {}", booking.endTime, booking.startTime);
+      throw new com.smartcampus.ops.common.BadRequestException("Error: Booking end time must be after the start time.");
+    }
+
+    // 2. Capacity Check: Fetch the facility to get its capacity
+    var facility = facilityRepository.findById(booking.resourceId)
+        .orElseThrow(() -> new com.smartcampus.ops.common.BadRequestException("Error: The selected facility does not exist."));
+
+    long currentBookingsCount = bookingRepository.countOverlappingBookings(
+        booking.resourceId, 
+        booking.startTime, 
+        booking.endTime
+    );
+
+    if (currentBookingsCount >= facility.getCapacity()) {
+      log.warn("Booking rejected: Facility {} is full ({}/{})", booking.resourceId, currentBookingsCount, facility.getCapacity());
+      throw new com.smartcampus.ops.common.BadRequestException("Error: This facility is already full for the selected time slot.");
+    }
+
+    // 3. Defaults and Save
     if (booking.status == null) booking.status = "PENDING";
     booking.createdAt = Instant.now();
     booking.updatedAt = Instant.now();

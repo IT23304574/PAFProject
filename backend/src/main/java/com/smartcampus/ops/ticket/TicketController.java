@@ -37,8 +37,7 @@ public class TicketController {
       log.info("Ticket check for ID: {}. Found: {}.", userId, list.size());
       return list;
     } catch (Exception e) {
-      log.error("CRITICAL ERROR fetching tickets for user {}: {}", userId, e.getMessage());
-      e.printStackTrace(); // Look at your terminal for this output!
+      log.error("CRITICAL ERROR fetching tickets for user {}: {}", userId, e.getMessage(), e);
       throw e;
     }
   }

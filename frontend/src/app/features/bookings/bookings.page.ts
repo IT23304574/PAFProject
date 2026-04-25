@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf, NgClass } from '@angular/common';
 import { BookingsService, Booking } from './bookings.service';
+import { FacilityService } from '../facility/facility.service';
+import { FacilityAnalyticsService } from '../facility/facility-analytics.service';
 import { ToastService } from '../../core/toast.service';
 
 @Component({
@@ -11,7 +13,7 @@ import { ToastService } from '../../core/toast.service';
   template: `
     <div class="page-header">
       <h1>📅 My Bookings</h1>
-      <p class="page-subtitle">Manage your resource bookings and reservations</p>
+      <p class="page-subtitle">Manage your facility bookings and reservations</p>
     </div>
 
     <div class="booking-form-card">
@@ -19,15 +21,13 @@ import { ToastService } from '../../core/toast.service';
       <form class="booking-form" (ngSubmit)="create()">
         <div class="form-row">
           <div class="form-group">
-            <label for="resourceId">Resource ID</label>
-            <input
-              id="resourceId"
-              type="text"
-              [(ngModel)]="resourceId"
-              name="resourceId"
-              placeholder="e.g., AUDITORIUM_001"
-              required
-            />
+            <label for="resourceId">Facility Name</label>
+            <select id="resourceId" [(ngModel)]="resourceId" name="resourceId" required (change)="refreshOccupancy()">
+              <option value="" disabled selected>Select a facility</option>
+              <option *ngFor="let res of facilities" [value]="res.id">
+                {{ res.name }} - Available: {{ getAvailableCount(res) }} / {{ res.capacity }}
+              </option>
+            </select>
           </div>
           <div class="form-group">
             <label for="startTime">Start Time</label>
@@ -36,6 +36,7 @@ import { ToastService } from '../../core/toast.service';
               type="datetime-local"
               [(ngModel)]="startTime"
               name="startTime"
+              (ngModelChange)="refreshOccupancy()"
               required
             />
           </div>
@@ -46,6 +47,7 @@ import { ToastService } from '../../core/toast.service';
               type="datetime-local"
               [(ngModel)]="endTime"
               name="endTime"
+              (ngModelChange)="refreshOccupancy()"
               required
             />
           </div>
@@ -80,8 +82,8 @@ import { ToastService } from '../../core/toast.service';
       <div class="bookings-grid" *ngIf="bookings.length > 0">
         <div class="booking-card" *ngFor="let booking of bookings">
           <div class="booking-header">
-            <div class="booking-resource">
-              <strong>{{ booking.resourceId }}</strong>
+            <div class="booking-facility">
+              <strong>{{ getFacilityName(booking.resourceId) }}</strong>
             </div>
             <div class="booking-status" [ngClass]="getStatusClass(booking.status)">
               {{ booking.status }}
@@ -169,7 +171,7 @@ import { ToastService } from '../../core/toast.service';
       transition: border-color 0.2s;
     }
 
-    .form-group input:focus {
+    .form-group input:focus, .form-group select:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
@@ -302,7 +304,7 @@ import { ToastService } from '../../core/toast.service';
       margin-bottom: 12px;
     }
 
-    .booking-resource {
+    .booking-facility {
       font-size: 16px;
       color: var(--gray-900);
     }
@@ -375,16 +377,57 @@ import { ToastService } from '../../core/toast.service';
 })
 export class BookingsPage implements OnInit {
   bookings: Booking[] = [];
+  facilities: any[] = [];
+  occupancyMap: { [id: string]: number } = {};
   resourceId = '';
   startTime = '';
   endTime = '';
   loading = false;
 
-  constructor(public toast: ToastService, private api: BookingsService) {}
+  constructor(
+    public toast: ToastService, 
+    private api: BookingsService,
+    private facilityService: FacilityService,
+    private analyticsService: FacilityAnalyticsService
+  ) {}
 
   ngOnInit() {
     console.log('BookingsPage initialized');
     this.load();
+    this.loadFacilities();
+  }
+
+  loadFacilities() {
+    this.facilityService.getAllFacilities().subscribe({
+      next: (r: any[]) => this.facilities = r,
+      error: (e: any) => console.error('Failed to load facilities', e)
+    });
+  }
+
+  refreshOccupancy() {
+    if (!this.startTime || !this.endTime) return;
+
+    const start = new Date(this.startTime);
+    const end = new Date(this.endTime);
+
+    if (start >= end) return;
+
+    // Call backend to get current occupancy for all facilities in this time slot
+    const params = { 
+      start: start.toISOString(), 
+      end: end.toISOString() 
+    };
+
+    this.api.getOccupancy(params.start, params.end).subscribe({
+      next: (map: any) => this.occupancyMap = map,
+      error: (err) => console.error('Could not fetch occupancy', err)
+    });
+  }
+
+  getAvailableCount(facility: any): number {
+    const occupied = this.occupancyMap[facility.id] || 0;
+    const available = facility.capacity - occupied;
+    return available > 0 ? available : 0;
   }
 
   load() {
@@ -454,8 +497,17 @@ export class BookingsPage implements OnInit {
         this.endTime = '';
         this.load();
       },
-      error: (e: any) => this.toast.show('Create failed: ' + (e?.error?.detail ?? e?.error?.message ?? e.message))
+      error: (e: any) => {
+        console.error('Booking creation error:', e);
+        const msg = e?.error?.message || e?.error?.detail || e?.message || "An unknown error occurred";
+        this.toast.show('Create failed: ' + msg);
+      }
     });
+  }
+
+  getFacilityName(id: string): string {
+    const facility = this.facilities.find(f => f.id === id);
+    return facility ? facility.name : id;
   }
 
   getStatusClass(status: string): string {

@@ -1,0 +1,60 @@
+<div class="form-container">
+  <h2>{{ isEditMode ? 'Edit Facility' : 'Add New Facility' }}</h2>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="facility-form">
+    <div class="form-group">
+      <label>Name *</label>
+      <input type="text" [(ngModel)]="facility.name" name="name" required>
+    </div>
+
+    <div class="form-group">
+      <label>Type *</label>
+      <select [(ngModel)]="facility.type" name="type" required>
+        <option value="">Select Type</option>
+        <option *ngFor="let type of facilityTypes" [value]="type">{{ type }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Capacity</label>
+      <input type="number" [(ngModel)]="facility.capacity" name="capacity">
+    </div>
+
+    <div class="form-group">
+      <label>Location *</label>
+      <input type="text" [(ngModel)]="facility.location" name="location" required>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Available From</label>
+        <input type="time" [(ngModel)]="facility.availableFrom" name="availableFrom">
+      </div>
+
+      <div class="form-group">
+        <label>Available To</label>
+        <input type="time" [(ngModel)]="facility.availableTo" name="availableTo">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Status</label>
+      <select [(ngModel)]="facility.status" name="status">
+        <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="isLoading">
+        {{ isLoading ? 'Saving...' : (isEditMode ? 'Update' : 'Create') }}
+      </button>
+      <button type="button" class="btn-secondary" (click)="goBack()">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

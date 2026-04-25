@@ -1,4 +1,5 @@
 package com.smartcampus.ops;
+<<<<<<< HEAD
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,3 +37,5 @@ public class SecurityConfig {
         return source;
     }
 }
+=======
+>>>>>>> 9c4faf680075f1c9baee4ea3e86f93115577688c
