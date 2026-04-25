@@ -1,8 +1,16 @@
+<!-- User Info Bar -->
+<div class="user-info-bar">
+  <span>👋 Welcome, <strong>System Administrator (Admin Mode)</strong></span>
+</div>
+
 <div class="facility-container">
-  <!-- Header with Add Button -->
+  <!-- Header with Admin Dashboard and Add Button -->
   <div class="header-section">
-    <h2>Facilities Management</h2>
-    <button (click)="addFacility()" class="btn-add">+ Add New Facility</button>
+    <h2>🏫 Facilities Management</h2>
+    <div class="header-buttons">
+      <button (click)="goToAdminDashboard()" class="btn-dashboard">📊 Admin Dashboard</button>
+      <button (click)="addFacility()" class="btn-add">+ Add New Facility</button>
+    </div>
   </div>
 
   <!-- Error Message -->
@@ -12,21 +20,21 @@
 
   <!-- Search Section -->
   <div class="search-section">
-    <h3>Search Facilities</h3>
+    <h3>🔍 Search Facilities</h3>
     <div class="search-row">
-      <input type="text" [(ngModel)]="searchType" placeholder="Search by Type" class="search-input">
+      <input type="text" [(ngModel)]="searchType" placeholder="Search by Type (e.g., LAB, LECTURE_HALL)" class="search-input">
       <button (click)="searchByType()" class="btn btn-primary">Search</button>
     </div>
     <div class="search-row">
-      <input type="text" [(ngModel)]="searchLocation" placeholder="Search by Location" class="search-input">
+      <input type="text" [(ngModel)]="searchLocation" placeholder="Search by Location (e.g., Building 1)" class="search-input">
       <button (click)="searchByLocation()" class="btn btn-primary">Search</button>
     </div>
-    <button (click)="clearSearch()" class="btn btn-secondary">Clear</button>
+    <button (click)="clearSearch()" class="btn btn-secondary">Clear Search</button>
   </div>
 
   <!-- Loading Indicator -->
   <div *ngIf="isLoading" class="loading">
-    Loading facilities...
+    ⏳ Loading facilities...
   </div>
 
   <!-- Facilities Table -->
@@ -59,15 +67,15 @@
           </span>
         </td>
         <td>
-          <button (click)="editFacility(facility.id!)" class="btn-warning">Edit</button>
-          <button (click)="deleteFacility(facility.id!)" class="btn-danger">Delete</button>
+          <button (click)="editFacility(facility.id!)" class="btn-warning">✏️ Edit</button>
+          <button (click)="deleteFacility(facility.id!)" class="btn-danger">🗑️ Delete</button>
         </td>
       </tr>
     </tbody>
-   </table>
+  </table>
 
   <!-- No Data Message -->
   <div *ngIf="!isLoading && filteredFacilities.length === 0" class="no-data">
-    No facilities found.
+    📭 No facilities found.
   </div>
 </div>
