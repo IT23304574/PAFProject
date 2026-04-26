@@ -14,4 +14,39 @@ body {
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+:root {
+  color-scheme: dark;
+  background-color: #0b0f1a;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background: #0b0f1a;
+  color: #e2e8f0;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* REMOVE flex centering COMPLETELY */
+body {
+  overflow-x: hidden;
+}
+
+/* Optional scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+
 }

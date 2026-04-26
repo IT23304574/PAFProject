@@ -1,4 +1,10 @@
-server:
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://USERNAME:PWD@paf.eo9iuqw.mongodb.net/pafdb?retryWrites=true&w=majority&appName=PAF
+
+ server:
   port: 8080
 
 spring:

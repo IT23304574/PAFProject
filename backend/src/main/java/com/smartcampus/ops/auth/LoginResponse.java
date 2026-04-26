@@ -1,8 +1,14 @@
 package com.smartcampus.ops.auth;
 
 public class LoginResponse {
-  public String accessToken;
-  public LoginResponse(String accessToken) {
-    this.accessToken = accessToken;
-  }
+
+    private String token;
+
+    public LoginResponse(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
 }
