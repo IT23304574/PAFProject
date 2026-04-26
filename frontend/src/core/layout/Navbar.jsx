@@ -17,21 +17,27 @@ function Navbar() {
       <h2 style={{ margin: 0 }}>Smart Campus</h2>
 
       <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-        <span>{user}</span>
-
-        <button
-          onClick={logout}
-          style={{
-            padding: "6px 12px",
-            background: "#ef4444",
-            border: "none",
-            color: "white",
-            cursor: "pointer",
-            borderRadius: "5px"
-          }}
-        >
-          Logout
-        </button>
+        {user ? (
+          <>
+            {user.picture && <img src={user.picture} alt="Profile" style={{ width: '32px', height: '32px', borderRadius: '50%' }} />}
+            <span>{user.name} ({user.role})</span>
+            <button
+              onClick={logout}
+              style={{
+                padding: "6px 12px",
+                background: "#ef4444",
+                border: "none",
+                color: "white",
+                cursor: "pointer",
+                borderRadius: "5px"
+              }}
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <span>Not logged in</span>
+        )}
       </div>
     </div>
   );

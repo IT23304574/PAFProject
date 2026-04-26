@@ -1,12 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainLayout from "../core/layout/MainLayout";
 import Login from "../features/auth/Login";
 
 function AppRoutes() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-      </Routes>
+      <MainLayout>
+        <Routes>
+          <Route path="/" element={<Login />} />
+        </Routes>
+      </MainLayout>
     </BrowserRouter>
   );
 }
