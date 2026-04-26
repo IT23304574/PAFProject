@@ -36,47 +36,56 @@ public class AuthController {
         return authService.login(user.getUsername(), user.getPassword());
     }
 
-    @PostMapping("/google")
-    public ResponseEntity<?> verifyGoogleToken(@RequestBody Map<String, String> payload) {
-        String tokenString = payload.get("token");
+   @PostMapping("/google")
+public ResponseEntity<?> verifyGoogleToken(@RequestBody Map<String, String> payload) {
+    String tokenString = payload.get("token");
 
-        try {
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
-                    .setAudience(Collections.singletonList(CLIENT_ID))
-                    .build();
+    try {
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                new NetHttpTransport(), new GsonFactory())
+                .setAudience(Collections.singletonList(CLIENT_ID))
+                .build();
 
-            GoogleIdToken idToken = verifier.verify(tokenString);
-            
-            if (idToken != null) {
-                GoogleIdToken.Payload payloadInfo = idToken.getPayload();
+        GoogleIdToken idToken = verifier.verify(tokenString);
 
-                // Get profile information from payload
-                String email = payloadInfo.getEmail();
-                String name = (String) payloadInfo.get("name");
-                String pictureUrl = (String) payloadInfo.get("picture");
+        if (idToken != null) {
+            GoogleIdToken.Payload payloadInfo = idToken.getPayload();
 
-                // TODO: Look up the user's email in your SQL/NoSQL database here
-                String role = "USER"; 
-                if (email.endsWith("@admin.smartcampus.edu")) {
-                    role = "ADMIN";
-                } else if (email.endsWith("@tech.smartcampus.edu")) {
-                    role = "TECHNICIAN";
-                }
+            // Extract user info
+            String email = payloadInfo.getEmail();
+            String name = (String) payloadInfo.get("name");
+            String pictureUrl = (String) payloadInfo.get("picture");
 
-                // Return user object back to React
-                Map<String, Object> response = new HashMap<>();
-                response.put("email", email);
-                response.put("name", name);
-                response.put("picture", pictureUrl);
-                response.put("role", role);
-
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token.");
+            // Assign role
+            String role = "USER";
+            if (email.endsWith("@admin.smartcampus.edu")) {
+                role = "ADMIN";
+            } else if (email.endsWith("@tech.smartcampus.edu")) {
+                role = "TECHNICIAN";
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Token verification failed.");
+
+            // ✅ GENERATE JWT TOKEN (IMPORTANT)
+            String jwtToken = authService.generateGoogleUserToken(email, role);
+
+            // Return response
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", jwtToken);   // 🔥 REQUIRED
+            response.put("email", email);
+            response.put("name", name);
+            response.put("picture", pictureUrl);
+            response.put("role", role);
+
+            return ResponseEntity.ok(response);
+
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid ID token.");
         }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Token verification failed.");
     }
+}
 }
