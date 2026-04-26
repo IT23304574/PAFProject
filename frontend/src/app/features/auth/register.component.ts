@@ -145,6 +145,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       next: () => {
         this.isLoading = false;
         this.toast.show('✅ Registration successful! Please login.');
+        console.log('Registration success - Navigating to /login');
         this.router.navigate(['/login']);
       },
       error: (e) => {
@@ -166,7 +167,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         next: () => {
           this.isLoading = false;
           this.toast.show('✅ Login successful!');
-          this.router.navigate(['/resources']);
+          this.router.navigate(['/bookings']);
         },
         error: (e) => {
           this.isLoading = false;

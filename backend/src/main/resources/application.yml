@@ -25,4 +25,4 @@ server:
 logging:
   level:
     org.springframework.web: DEBUG
-    com.smartcampus.ops: DEBUG
+    com.smartcampus.ops: DEBUG/

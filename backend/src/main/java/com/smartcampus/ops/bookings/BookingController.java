@@ -23,10 +23,13 @@ public class BookingController {
   @Autowired
   private FacilityRepository facilityRepository;
 
+  @Autowired
+  private org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
+
   @GetMapping
   public List<Booking> all() {
     List<Booking> list = bookingRepository.findAll();
-    log.info("Total bookings in database: {}", list.size());
+    log.info("READ ALL: Database: '{}' | Total Collection Count: {}", mongoTemplate.getDb().getName(), list.size());
     return list;
   }
 
@@ -41,7 +44,14 @@ public class BookingController {
         return List.of();
       }
       List<Booking> list = bookingRepository.findByUserId(userId);
-      log.info("DATABASE READ: userId={} | Count={} | TotalInDB={}", userId, list.size(), bookingRepository.count());
+
+      log.info("**************************************************");
+      log.info("DATABASE SYNC CHECK");
+      log.info("ACTUAL DB NAME: '{}'", mongoTemplate.getDb().getName());
+      log.info("FILTERING FOR USER: {}", userId);
+      log.info("RESULTS: Found {} user bookings (Total in this DB: {})", list.size(), bookingRepository.count());
+      log.info("**************************************************");
+      
       return list;
     } catch (Exception e) {
       log.error("Error fetching bookings for user {}: {}", userId, e.getMessage(), e);
@@ -100,7 +110,15 @@ public class BookingController {
     booking.createdAt = Instant.now();
     booking.updatedAt = Instant.now();
     
-    return bookingRepository.save(booking);
+    log.info("PRE-SAVE: Database: '{}' | Collection: '{}' | User: {}", 
+        mongoTemplate.getDb().getName(), 
+        mongoTemplate.getCollectionName(Booking.class),
+        booking.userId);
+        
+    Booking saved = bookingRepository.save(booking);
+    log.info("POST-SAVE SUCCESS: Generated ID is {}. FacilityID={}, Time={} to {}", 
+        saved.id, saved.resourceId, saved.startTime, saved.endTime);
+    return saved;
   }
 
   @PutMapping("/{id}")

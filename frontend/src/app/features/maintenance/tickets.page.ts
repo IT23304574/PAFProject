@@ -515,6 +515,7 @@ export class TicketsPage implements OnInit {
       return;
     }
     const user = JSON.parse(userStr); // Parse user object
+    console.log('User object from localStorage for tickets:', user);
     const userId = user.id; // Extract user ID
     if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) { // Validate user ID format
       this.toast.show('Invalid user session. Please log in again.');
@@ -548,6 +549,7 @@ export class TicketsPage implements OnInit {
       return;
     }
     const userId = JSON.parse(userStr).id;
+    console.log('User ID used for creating ticket:', userId);
 
     const payload = {
       resourceId: this.resourceId,

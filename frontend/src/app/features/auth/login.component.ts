@@ -219,12 +219,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isLoading = false;
     this.toast.show('✅ Login successful!');
     this.isLoggedIn = true;
-    setTimeout(() => this.router.navigate(['/resources']), 1000);
+    console.log('Login success - Navigating to /bookings');
+    this.router.navigate(['/bookings']);
   }
 
   private onLoginError(e: any) {
     this.isLoading = false;
-    this.toast.show('❌ Login failed: ' + (e?.error?.detail ?? e.message ?? 'Unknown error'));
+    const errorMsg = e?.error?.message || e?.error?.detail || e.message || 'Unknown error';
+    console.error('Full Login Error object:', e);
+    this.toast.show('❌ Login failed: ' + errorMsg);
   }
 
   logout() {

@@ -20,10 +20,13 @@ export class BookingsService {
   constructor(private http: HttpClient) {}
 
   mine(userId: string): Observable<Booking[]> {
-    return this.http.get<Booking[]>(`${this.apiUrl}/me?userId=${userId}`);
+    const url = `${this.apiUrl}/me?userId=${userId}`;
+    console.log('Fetching bookings from:', url);
+    return this.http.get<Booking[]>(url);
   }
 
   create(resourceId: string, startTime: string, endTime: string, userId: string): Observable<Booking> {
+    console.log('Creating booking at:', this.apiUrl, 'with payload:', { resourceId, startTime, endTime, userId });
     return this.http.post<Booking>(this.apiUrl, { resourceId, startTime, endTime, userId });
   }
 

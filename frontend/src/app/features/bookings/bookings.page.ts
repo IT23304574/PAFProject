@@ -437,6 +437,7 @@ export class BookingsPage implements OnInit {
       return;
     }
     const user = JSON.parse(userStr); // Parse user object
+    console.log('User object from localStorage for bookings:', user);
     const userId = user.id; // Extract user ID
     if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) { // Validate user ID format
       this.toast.show('Invalid user session. Please log in again.');
@@ -448,10 +449,15 @@ export class BookingsPage implements OnInit {
     this.loading = true;
     this.api.mine(userId).subscribe({
       next: (r: Booking[]) => {
+        console.log(`Successfully fetched ${r.length} bookings from the server.`);
+        if (r.length > 0) {
+          console.log('First booking ID from server:', r[0].id);
+        }
         this.bookings = r;
         this.loading = false;
       },
       error: (e: any) => {
+        console.error('API Error loading bookings:', e);
         this.toast.show('Load failed: ' + (e?.error?.detail ?? e?.error?.message ?? e.message));
         this.loading = false;
       }
@@ -483,6 +489,7 @@ export class BookingsPage implements OnInit {
       return;
     }
     const userId = JSON.parse(userStr).id;
+    console.log('User ID used for creating booking:', userId);
 
     this.toast.show('Creating booking...');
 
@@ -491,6 +498,7 @@ export class BookingsPage implements OnInit {
 
     this.api.create(this.resourceId, start, end, userId).subscribe({
       next: (booking: Booking) => {
+        console.log('Booking created successfully on server:', booking);
         this.toast.show('Booking created successfully!');
         this.resourceId = '';
         this.startTime = '';
