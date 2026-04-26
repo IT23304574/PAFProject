@@ -16,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private static final String CLIENT_ID = "35089460198-e37rkbis6ehek9pm5t133td5afd1sji0.apps.googleusercontent.com";
@@ -26,66 +27,73 @@ public class AuthController {
         this.authService = authService;
     }
 
+    // ✅ REGISTER
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
-        return authService.register(user);
+    public ResponseEntity<?> register(@RequestBody User user) {
+        String result = authService.register(user);
+        return ResponseEntity.ok(Collections.singletonMap("message", result));
     }
 
+    // ✅ LOGIN
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
-        return authService.login(user.getUsername(), user.getPassword());
+    public ResponseEntity<?> login(@RequestBody User user) {
+        String token = authService.login(user.getUsername(), user.getPassword());
+        return ResponseEntity.ok(Collections.singletonMap("token", token));
     }
 
-   @PostMapping("/google")
-public ResponseEntity<?> verifyGoogleToken(@RequestBody Map<String, String> payload) {
-    String tokenString = payload.get("token");
+    // ✅ GOOGLE LOGIN
+    @PostMapping("/google")
+    public ResponseEntity<?> verifyGoogleToken(@RequestBody Map<String, String> payload) {
 
-    try {
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
-                new NetHttpTransport(), new GsonFactory())
-                .setAudience(Collections.singletonList(CLIENT_ID))
-                .build();
+        String tokenString = payload.get("token");
 
-        GoogleIdToken idToken = verifier.verify(tokenString);
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                    new NetHttpTransport(), new GsonFactory())
+                    .setAudience(Collections.singletonList(CLIENT_ID))
+                    .build();
 
-        if (idToken != null) {
-            GoogleIdToken.Payload payloadInfo = idToken.getPayload();
+            GoogleIdToken idToken = verifier.verify(tokenString);
 
-            // Extract user info
-            String email = payloadInfo.getEmail();
-            String name = (String) payloadInfo.get("name");
-            String pictureUrl = (String) payloadInfo.get("picture");
+            if (idToken != null) {
+                GoogleIdToken.Payload payloadInfo = idToken.getPayload();
 
-            // Assign role
-            String role = "USER";
-            if (email.endsWith("@admin.smartcampus.edu")) {
-                role = "ADMIN";
-            } else if (email.endsWith("@tech.smartcampus.edu")) {
-                role = "TECHNICIAN";
+                String email = payloadInfo.getEmail();
+                String name = (String) payloadInfo.get("name");
+                String pictureUrl = (String) payloadInfo.get("picture");
+
+                // ✅ ROLE LOGIC (fixed)
+                String role = "USER";
+                if (email != null && email.endsWith("@admin.smartcampus.edu")) {
+                    role = "ADMIN";
+                } else if (email != null && email.endsWith("@tech.smartcampus.edu")) {
+                    role = "TECHNICIAN";
+                }
+
+                // ✅ JWT
+                String jwtToken = authService.generateGoogleUserToken(email, role);
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("token", jwtToken);
+                response.put("email", email);
+                response.put("name", name);
+                response.put("picture", pictureUrl);
+                response.put("role", role);
+
+                return ResponseEntity.ok(response);
+
+            } else {
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .body(Collections.singletonMap("error", "Invalid ID token."));
             }
 
-            // ✅ GENERATE JWT TOKEN (IMPORTANT)
-            String jwtToken = authService.generateGoogleUserToken(email, role);
+        } catch (Exception e) {
+            e.printStackTrace();
 
-            // Return response
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", jwtToken);   // 🔥 REQUIRED
-            response.put("email", email);
-            response.put("name", name);
-            response.put("picture", pictureUrl);
-            response.put("role", role);
-
-            return ResponseEntity.ok(response);
-
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid ID token.");
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Token verification failed: " + e.getMessage()));
         }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Token verification failed.");
     }
-}
 }
