@@ -27,29 +27,27 @@ function Register() {
   };
 
   return (
-    <div className="register-container">
-      <div className="register-card">
-        <h2>Create Account</h2>
-        <p className="subtitle">Join Smart Campus</p>
+    <div className="register-card">
+      <h2>Create Account</h2>
+      <p className="subtitle">Join Smart Campus</p>
 
-        <input
-          type="email"
-          placeholder="Email address"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+      <input
+        type="email"
+        placeholder="Email address"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
-        <button onClick={handleRegister}>Register</button>
+      <button onClick={handleRegister}>Register</button>
 
-        <p className="login-link">Already have an account? Login</p>
-      </div>
+      <p className="login-link">Already have an account? Login</p>
     </div>
   );
 }
