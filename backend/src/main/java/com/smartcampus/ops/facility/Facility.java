@@ -3,11 +3,9 @@ package com.smartcampus.ops.facility;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import java.time.LocalTime;
 
 @Document(collection = "facilities")
 public class Facility {
-
     @Id
     private String id;
     
@@ -24,10 +22,10 @@ public class Facility {
     private String location;
     
     @Field("available_from")
-    private LocalTime availableFrom;
+    private String availableFrom;
     
     @Field("available_to")
-    private LocalTime availableTo;
+    private String availableTo;
     
     @Field("status")
     private String status;
@@ -35,7 +33,7 @@ public class Facility {
     public Facility() {}
 
     public Facility(String name, String type, Integer capacity, String location, 
-                    LocalTime availableFrom, LocalTime availableTo, String status) {
+                    String availableFrom, String availableTo, String status) {
         this.name = name;
         this.type = type;
         this.capacity = capacity;
@@ -51,8 +49,8 @@ public class Facility {
     public String getType() { return type; }
     public Integer getCapacity() { return capacity; }
     public String getLocation() { return location; }
-    public LocalTime getAvailableFrom() { return availableFrom; }
-    public LocalTime getAvailableTo() { return availableTo; }
+    public String getAvailableFrom() { return availableFrom; }
+    public String getAvailableTo() { return availableTo; }
     public String getStatus() { return status; }
 
     // Setters
@@ -61,7 +59,7 @@ public class Facility {
     public void setType(String type) { this.type = type; }
     public void setCapacity(Integer capacity) { this.capacity = capacity; }
     public void setLocation(String location) { this.location = location; }
-    public void setAvailableFrom(LocalTime availableFrom) { this.availableFrom = availableFrom; }
-    public void setAvailableTo(LocalTime availableTo) { this.availableTo = availableTo; }
+    public void setAvailableFrom(String availableFrom) { this.availableFrom = availableFrom; }
+    public void setAvailableTo(String availableTo) { this.availableTo = availableTo; }
     public void setStatus(String status) { this.status = status; }
 }

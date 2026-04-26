@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/facilities")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:3000")
 public class FacilityController {
 
     @Autowired
@@ -49,11 +49,6 @@ public class FacilityController {
     @GetMapping("/search/location")
     public ResponseEntity<List<Facility>> searchByLocation(@RequestParam String location) {
         return ResponseEntity.ok(facilityService.searchByLocation(location));
-    }
-
-    @GetMapping("/search/capacity")
-    public ResponseEntity<List<Facility>> searchByMinCapacity(@RequestParam Integer capacity) {
-        return ResponseEntity.ok(facilityService.searchByMinCapacity(capacity));
     }
 
     @GetMapping("/active")

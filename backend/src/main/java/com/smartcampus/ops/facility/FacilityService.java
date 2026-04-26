@@ -21,24 +21,18 @@ public class FacilityService {
     }
 
     public Facility createFacility(Facility facility) {
-        if (facility.getStatus() == null || facility.getStatus().isEmpty()) {
-            facility.setStatus("ACTIVE");
-        }
         return facilityRepository.save(facility);
     }
 
     public Facility updateFacility(String id, Facility facilityDetails) {
-        Facility existingFacility = getFacilityById(id);
-        
-        existingFacility.setName(facilityDetails.getName());
-        existingFacility.setType(facilityDetails.getType());
-        existingFacility.setCapacity(facilityDetails.getCapacity());
-        existingFacility.setLocation(facilityDetails.getLocation());
-        existingFacility.setAvailableFrom(facilityDetails.getAvailableFrom());
-        existingFacility.setAvailableTo(facilityDetails.getAvailableTo());
-        existingFacility.setStatus(facilityDetails.getStatus());
-        
-        return facilityRepository.save(existingFacility);
+        Facility existing = getFacilityById(id);
+        existing.setName(facilityDetails.getName());
+        existing.setType(facilityDetails.getType());
+        existing.setCapacity(facilityDetails.getCapacity());
+        existing.setLocation(facilityDetails.getLocation());
+        existing.setAvailableTo(facilityDetails.getAvailableTo());
+        existing.setStatus(facilityDetails.getStatus());
+        return facilityRepository.save(existing);
     }
 
     public void deleteFacility(String id) {
@@ -51,10 +45,6 @@ public class FacilityService {
 
     public List<Facility> searchByLocation(String location) {
         return facilityRepository.findByLocation(location);
-    }
-
-    public List<Facility> searchByMinCapacity(Integer capacity) {
-        return facilityRepository.findByCapacityGreaterThanEqual(capacity);
     }
 
     public List<Facility> getActiveFacilities() {
