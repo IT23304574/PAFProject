@@ -8,7 +8,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/facilities")
-@CrossOrigin(origins = "http://localhost:4200")
 public class FacilityController {
 
     @Autowired
@@ -26,8 +25,7 @@ public class FacilityController {
 
     @PostMapping
     public ResponseEntity<Facility> createFacility(@RequestBody Facility facility) {
-        Facility created = facilityService.createFacility(facility);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return new ResponseEntity<>(facilityService.createFacility(facility), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

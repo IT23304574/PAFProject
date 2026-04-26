@@ -12,76 +12,69 @@ import com.smartcampus.ops.common.BadRequestException;
 import java.util.Collections;
 
 @RestController
-@RequestMapping("/api/v1/auth")
-@CrossOrigin
+@RequestMapping("/api/auth")
 public class AuthController {
 
-  private final NetHttpTransport transport = new NetHttpTransport();
-  private final GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-  @Value("${google.client.id:725051219392-u8oac67c5dusdgb9ht9q3u683iss1lfl.apps.googleusercontent.com}")
-  private String googleClientId;
+    private final NetHttpTransport transport = new NetHttpTransport();
+    private final GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 
-  @Autowired
-  private UserRepository userRepository;
+    @Value("${google.client.id:725051219392-u8oac67c5dusdgb9ht9q3u683iss1lfl.apps.googleusercontent.com}")
+    private String googleClientId;
 
-  @PostMapping("/register")
-  public User register(@RequestBody User user) {
-    if (userRepository.existsByUsername(user.username)) {
-      throw new BadRequestException("Username already taken");
-    }
-    // Simple role assignment
-    if (user.role == null) user.role = "ROLE_USER";
-    return userRepository.save(user);
-  }
+    @Autowired
+    private UserRepository userRepository;
 
-  @PostMapping("/login")
-  public User login(@RequestBody LoginRequest request) {
-    User user = userRepository.findByUsername(request.username)
-        .orElseThrow(() -> new BadRequestException("Invalid email or password"));
-
-    // In production, use BCrypt.checkPassword
-    if (user.password == null || !user.password.equals(request.password)) {
-      throw new BadRequestException("Invalid email or password");
-    }
-    return user;
-  }
-
-  @PostMapping("/google")
-  public User googleLogin(@RequestBody LoginRequest request) {
-    if (request.idToken == null || request.idToken.isEmpty()) {
-      throw new BadRequestException("ID Token is required");
+    @PostMapping("/register")
+    public User register(@RequestBody User user) {
+        if (userRepository.existsByUsername(user.username)) {
+            throw new BadRequestException("Username already taken");
+        }
+        if (user.role == null) user.role = "ROLE_USER";
+        return userRepository.save(user);
     }
 
-    try {
-      GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-          .setAudience(Collections.singletonList(googleClientId))
-          .build();
-
-      GoogleIdToken idToken = verifier.verify(request.idToken);
-      if (idToken == null) {
-        throw new BadRequestException("Invalid ID Token");
-      }
-
-      Payload payload = idToken.getPayload();
-      String email = payload.getEmail();
-      String name = (String) payload.get("name");
-
-      return userRepository.findByUsername(email)
-          .orElseGet(() -> {
-            User newUser = new User();
-            newUser.username = email;
-            newUser.fullName = name != null ? name : "Google User";
-            newUser.role = "ROLE_USER";
-            return userRepository.save(newUser);
-          });
-    } catch (Exception e) {
-      throw new BadRequestException("Authentication failed: " + e.getMessage());
+    @PostMapping("/login")
+    public User login(@RequestBody LoginRequest request) {
+        User user = userRepository.findByUsername(request.username)
+                .orElseThrow(() -> new BadRequestException("Invalid email or password"));
+        if (user.password == null || !user.password.equals(request.password)) {
+            throw new BadRequestException("Invalid email or password");
+        }
+        return user;
     }
-  }
 
-  public static class LoginRequest {
-    public String username; // used as email
-    public String password;
-    public String idToken;
-  }
+    @PostMapping("/google")
+    public User googleLogin(@RequestBody LoginRequest request) {
+        if (request.idToken == null || request.idToken.isEmpty()) {
+            throw new BadRequestException("ID Token is required");
+        }
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                    .setAudience(Collections.singletonList(googleClientId))
+                    .build();
+            GoogleIdToken idToken = verifier.verify(request.idToken);
+            if (idToken == null) throw new BadRequestException("Invalid ID Token");
+
+            Payload payload = idToken.getPayload();
+            String email = payload.getEmail();
+            String name = (String) payload.get("name");
+
+            return userRepository.findByUsername(email)
+                    .orElseGet(() -> {
+                        User newUser = new User();
+                        newUser.username = email;
+                        newUser.fullName = name != null ? name : "Google User";
+                        newUser.role = "ROLE_USER";
+                        return userRepository.save(newUser);
+                    });
+        } catch (Exception e) {
+            throw new BadRequestException("Authentication failed: " + e.getMessage());
+        }
+    }
+
+    public static class LoginRequest {
+        public String username;
+        public String password;
+        public String idToken;
+    }
 }

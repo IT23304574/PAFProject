@@ -129,12 +129,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {
     this.checkLoginStatus();
   }
-  
+
   ngOnInit() {
     const isLibraryLoaded = !!(window as any).google?.accounts?.id;
-    
+
     if (!isLibraryLoaded) {
-      // If library is not in index.html, inject it manually to ensure it exists
       const script = document.createElement('script');
       script.src = 'https://accounts.google.com/gsi/client';
       script.async = true;
@@ -144,7 +143,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.waitForButtonAndInit();
       };
       script.onerror = () => {
-        console.error('Google Auth script failed to load. Check your network or ad-blocker.');
+        console.error('Google Auth script failed to load.');
       };
       document.head.appendChild(script);
     } else {
@@ -156,7 +155,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.googleInitInterval = setInterval(() => {
       const g = (window as any).google?.accounts?.id;
       const btn = document.getElementById('googleBtn');
-      
       if (g && btn) {
         this.initGoogleAuth();
         clearInterval(this.googleInitInterval);
@@ -173,7 +171,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   initGoogleAuth() {
     const g = (window as any).google;
     if (!g) return;
-    
+
     g.accounts.id.initialize({
       client_id: '725051219392-u8oac67c5dusdgb9ht9q3u683iss1lfl.apps.googleusercontent.com',
       callback: (response: any) => this.ngZone.run(() => this.handleGoogleLogin(response.credential)),
@@ -204,10 +202,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       console.error('Google Auth returned an empty token.');
       return;
     }
-
     this.ngZone.run(() => {
       this.isLoading = true;
-      // This method sends the token to /api/v1/auth/google
       this.auth.loginWithGoogleIdToken(token).subscribe({
         next: () => this.onLoginSuccess(),
         error: (e: any) => this.onLoginError(e)
@@ -219,7 +215,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isLoading = false;
     this.toast.show('✅ Login successful!');
     this.isLoggedIn = true;
-    setTimeout(() => this.router.navigate(['/resources']), 1000);
+    setTimeout(() => this.router.navigate(['/tickets']), 1000);
   }
 
   private onLoginError(e: any) {
