@@ -1,24 +1,35 @@
 :root {
-  color-scheme: light dark;
-  background-color: #ffffff;
+  color-scheme: dark;
+  background-color: #0b0f1a;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    background-color: #16171d;
-  }
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-body {
+html, body, #root {
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 320px;
-  min-height: 100svh;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background: #0b0f1a;
+  color: #e2e8f0;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* REMOVE flex centering COMPLETELY */
+body {
   overflow-x: hidden;
+}
+
+/* Optional scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
 }

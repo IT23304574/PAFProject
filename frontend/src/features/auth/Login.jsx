@@ -1,7 +1,8 @@
 function Login() {
   return (
     <div>
-      <h1>Login Page Working ✅</h1>
+      <h2>Login Page</h2>
+      <p>Welcome to Smart Campus. Please log in.</p>
     </div>
   );
 }

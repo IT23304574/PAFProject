@@ -1,8 +1,9 @@
 import { useContext } from "react";
-import { AuthContext } from "../auth/AuthContext";
+import { AuthContext } from "../../features/auth/AuthContext";
 
 function Navbar() {
-  const { user, logout } = useContext(AuthContext);
+  const auth = useContext(AuthContext);
+  const { user, logout } = auth || {}; // Safety net: prevents crash if auth is undefined
 
   return (
     <div style={{
