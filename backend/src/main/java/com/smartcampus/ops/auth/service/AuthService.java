@@ -8,20 +8,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
-    private UserRepository userRepository;
-    private JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
     public AuthService(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
     }
 
+    // ✅ REGISTER USER
     public String register(User user) {
         user.setRole("USER");
         userRepository.save(user);
         return "User registered successfully";
     }
 
+    // ✅ LOGIN WITH USERNAME + PASSWORD
     public String login(String username, String password) {
 
         User user = userRepository.findByUsername(username)
@@ -31,6 +33,12 @@ public class AuthService {
             throw new RuntimeException("Invalid credentials");
         }
 
+        // ✅ RETURN JWT TOKEN
         return jwtUtil.generateToken(user.getUsername(), user.getRole());
+    }
+
+    // ✅ 🔥 ADD THIS METHOD (FOR GOOGLE LOGIN)
+    public String generateGoogleUserToken(String email, String role) {
+        return jwtUtil.generateToken(email, role);
     }
 }
