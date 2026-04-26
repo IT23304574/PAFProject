@@ -1,28 +1,42 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ""
-  
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-  
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-  
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+  data:
+    mongodb:
+      # FIX: %23 decoded to literal # and entire URI quoted to prevent YAML parsing issues
+      uri: "${MONGODB_URI:mongodb+srv://sadeesh:82539685#Jmc@paf.eo9iuqw.mongodb.net/smartcampus_ops?retryWrites=true&w=majority}"
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "495535311823-hi9dh19tliujajqfiuepv7aafk2n3rij.apps.googleusercontent.com"
+            client-secret: "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"
+            scope: openid,profile,email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
 
 server:
   port: 8080
+
+app:
+  apiBase: /api/v1
+  jwt:
+    issuer: smart-campus-ops-hub
+    ttlMinutes: 240
+    secret: "dev-only-change-this-secret-dev-only-change-this-secret"
+  uploads:
+    dir: "${user.home}/smartcampus-uploads"
+    maxBytes: 5242880
 
 logging:
   level:
     org.springframework.web: DEBUG
     com.smartcampus.ops: DEBUG
+
+google:
+  client:
+    id: "495535311823-hi9dh19tliujajqfiuepv7aafk2n3rij.apps.googleusercontent.com"
+    secret: "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"

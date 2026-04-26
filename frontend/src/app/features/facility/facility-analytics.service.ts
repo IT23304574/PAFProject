@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_BASE } from '../../core/api';
 
 export interface AnalyticsData {
   mostBooked: { name: string; bookings: number }[];
@@ -19,7 +20,7 @@ export interface AnalyticsData {
   providedIn: 'root'
 })
 export class FacilityAnalyticsService {
-  private apiUrl = 'http://localhost:8080/api/facilities/analytics';
+  private apiUrl = `${API_BASE}/facilities/analytics`;
 
   constructor(private http: HttpClient) { }
 

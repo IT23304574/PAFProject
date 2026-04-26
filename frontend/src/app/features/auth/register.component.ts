@@ -1,178 +1,190 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
-import { AuthService } from './auth.service';
-import { ToastService } from '../../core/toast.service';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-
-declare var google: any;
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { AuthService } from './auth.service';
+import { loadGoogleIdentityScript, resolveGoogleClientId } from '../../core/google-oauth';
 
 @Component({
   standalone: true,
   selector: 'app-register',
-  imports: [FormsModule, NgIf, RouterLink],
+  imports: [FormsModule, CommonModule, RouterLink],
   template: `
-    <div class="login-container">
-      <div class="login-card">
-        <div class="login-header">
-          <h1>📝 Create Account</h1>
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <div class="auth-header">
+          <span class="auth-icon">🏫</span>
+          <h2>Create Account</h2>
           <p>Join Smart Campus Ops Hub</p>
         </div>
 
-        <div *ngIf="toast.message" [class]="'alert ' + (toast.message.includes('success') ? 'alert-success' : 'alert-error')">
-          {{toast.message}}
-        </div>
+        <div *ngIf="successMsg" class="alert alert-success">{{ successMsg }}</div>
+        <div *ngIf="errorMsg"   class="alert alert-error">{{ errorMsg }}</div>
 
-        <form (ngSubmit)="register()" #regForm="ngForm">
-          <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input type="text" [(ngModel)]="fullName" name="fullName" placeholder="John Doe" required>
+        <form (ngSubmit)="submit()" class="auth-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input [(ngModel)]="form.fullName" name="fullName" placeholder="John Doe" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" [(ngModel)]="form.username" name="username" placeholder="you@campus.lk" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" [(ngModel)]="form.password" name="password" placeholder="Min 6 chars" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone (optional)</label>
+              <input [(ngModel)]="form.phone" name="phone" placeholder="+94 77 000 0000" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Department (optional)</label>
+              <input [(ngModel)]="form.department" name="department" placeholder="Engineering" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Register as</label>
+              <select [(ngModel)]="form.role" name="role">
+                <option value="ROLE_USER">Student / Staff</option>
+                <option value="ROLE_TECHNICIAN">Technician (requires approval)</option>
+                <option value="ROLE_ADMIN">Admin</option>
+              </select>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Email Address</label>
-            <input type="email" [(ngModel)]="email" name="email" placeholder="email@example.com" required>
+          <div *ngIf="form.role === 'ROLE_TECHNICIAN'" class="info-box">
+            ℹ️ Technician accounts require admin approval before login is allowed.
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" [(ngModel)]="password" name="password" placeholder="••••••••" required>
-          </div>
-
-          <div class="button-group">
-            <button type="submit" [disabled]="!regForm.valid || isLoading">
-              {{isLoading ? 'Creating account...' : 'Register'}}
-            </button>
-          </div>
+          <button type="submit" [disabled]="loading" class="btn-full">
+            {{ loading ? 'Creating account…' : 'Register' }}
+          </button>
+          <button type="button" [disabled]="googleLoading" class="btn-google" (click)="registerWithGoogle()">
+            {{ googleLoading ? 'Opening Google…' : 'Register with Google' }}
+          </button>
         </form>
 
-        <p class="auth-switch">
-          Already have an account? <a routerLink="/login">Login here</a>
-        </p>
-
-        <div class="divider"><span>OR</span></div>
-
-        <div id="googleBtnReg" class="google-btn-container"></div>
+        <div class="auth-footer">
+          <p>Already have an account? <a routerLink="/login">Sign in</a></p>
+        </div>
       </div>
     </div>
   `,
   styles: [`
-    .login-container { display: flex; justify-content: center; align-items: center; min-height: 60vh; }
-    .login-card { background: white; border: 1px solid var(--gray-200); border-radius: 8px; padding: 40px; width: 100%; max-width: 500px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-    .login-header { text-align: center; margin-bottom: 32px; }
-    .login-header h1 { margin: 0 0 8px 0; color: var(--primary); }
-    .login-header p { color: var(--gray-500); margin: 0; }
-    .button-group { display: flex; gap: 12px; margin-top: 24px; }
-    .button-group button { flex: 1; }
-    .auth-switch { text-align: center; margin-top: 16px; font-size: 14px; }
-    .divider { margin: 24px 0; text-align: center; border-bottom: 1px solid var(--gray-200); line-height: 0.1em; }
-    .divider span { background:#fff; padding:0 10px; color: var(--gray-500); font-size: 12px; }
-    .google-btn-container { display: flex; justify-content: center; }
+    .auth-wrapper {
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; background: linear-gradient(135deg,#1f5eff11,#10b98111); padding: 24px;
+    }
+    .auth-card { background: white; border-radius: 16px; padding: 40px; width: 100%; max-width: 560px; box-shadow: 0 8px 32px rgba(0,0,0,.12); }
+    .auth-header { text-align: center; margin-bottom: 28px; }
+    .auth-icon { font-size: 48px; display: block; margin-bottom: 8px; }
+    .auth-header h2 { margin: 0; font-size: 22px; }
+    .auth-header p  { margin: 4px 0 0; color: #6b7280; font-size: 14px; }
+    .auth-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-weight: 500; font-size: 14px; color: #374151; }
+    input, select { padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; }
+    input:focus, select:focus { outline: none; border-color: #1f5eff; box-shadow: 0 0 0 3px #1f5eff22; }
+    .btn-full { width: 100%; padding: 12px; background: #1f5eff; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .btn-full:hover:not(:disabled) { background: #1a47cc; }
+    .btn-full:disabled { opacity: .6; cursor: not-allowed; }
+    .btn-google { width: 100%; padding: 12px; background: white; color: #111827; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .btn-google:disabled { opacity: .6; cursor: not-allowed; }
+    .alert { padding: 10px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 12px; }
+    .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .alert-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .info-box { background: #e0f2fe; color: #0369a1; padding: 10px 14px; border-radius: 8px; font-size: 13px; }
+    .auth-footer { margin-top: 20px; text-align: center; font-size: 14px; color: #6b7280; }
+    .auth-footer a { color: #1f5eff; text-decoration: none; font-weight: 500; }
+    @media(max-width:500px){ .form-row { grid-template-columns: 1fr; } }
   `]
 })
-export class RegisterComponent implements OnInit, OnDestroy {
-  fullName = '';
-  email = '';
-  password = '';
-  isLoading = false;
-  private googleInitInterval?: ReturnType<typeof setInterval>;
+export class RegisterComponent implements OnInit {
+  form = { fullName: '', username: '', password: '', phone: '', department: '', role: 'ROLE_USER' };
+  loading    = false;
+  googleLoading = false;
+  errorMsg   = '';
+  successMsg = '';
+  googleClientId = '';
 
-  constructor(
-    public toast: ToastService,
-    private auth: AuthService,
-    private router: Router,
-    private ngZone: NgZone
-  ) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
   ngOnInit() {
-    const isLibraryLoaded = !!(window as any).google?.accounts?.id;
-    
-    if (!isLibraryLoaded) {
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      script.onload = () => this.waitForButtonAndInit();
-      document.head.appendChild(script);
-    } else {
-      this.waitForButtonAndInit();
-    }
+    this.googleClientId = resolveGoogleClientId();
   }
 
-  private waitForButtonAndInit() {
-    this.googleInitInterval = setInterval(() => {
-      const g = (window as any).google?.accounts?.id;
-      const btn = document.getElementById('googleBtnReg');
-      
-      if (g && btn) {
-        this.initGoogleAuth();
-        clearInterval(this.googleInitInterval);
-      }
-    }, 100);
-  }
-
-  ngOnDestroy() {
-    if (this.googleInitInterval) {
-      clearInterval(this.googleInitInterval);
-    }
-  }
-
-  initGoogleAuth() {
-    if (typeof google !== 'undefined') {
-      google.accounts.id.initialize({
-        client_id: '725051219392-u8oac67c5dusdgb9ht9q3u683iss1lfl.apps.googleusercontent.com',
-        callback: (response: any) => this.ngZone.run(() => this.handleGoogleLogin(response.credential)),
-        auto_select: false,
-        ux_mode: 'popup',
-        context: 'signup'
-      });
-      google.accounts.id.renderButton(
-        document.getElementById('googleBtnReg'),
-        { theme: 'outline', size: 'large', width: 350, shape: 'rectangular', text: 'signup_with' }
-      );
-    }
-  }
-
-  register() {
-    this.isLoading = true;
-    const payload = {
-      fullName: this.fullName,
-      username: this.email,
-      password: this.password,
-      role: 'ROLE_USER'
-    };
-    this.auth.register(payload).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.toast.show('✅ Registration successful! Please login.');
-        this.router.navigate(['/login']);
+  submit() {
+    this.errorMsg = '';
+    this.successMsg = '';
+    if (this.form.password.length < 6) { this.errorMsg = 'Password must be at least 6 characters'; return; }
+    this.loading = true;
+    this.auth.register(this.form).subscribe({
+      next: user => {
+        this.loading = false;
+        if (user.role === 'ROLE_TECHNICIAN' && user.approvalStatus === 'PENDING_APPROVAL') {
+          this.successMsg = '✅ Registration successful! Your technician account is pending admin approval.';
+        } else {
+          this.router.navigate(['/login']);
+        }
       },
-      error: (e) => {
-        this.isLoading = false;
-        this.toast.show('❌ Registration failed: ' + (e?.error?.detail ?? e.message ?? 'Unknown error'));
+      error: err => {
+        this.loading = false;
+        this.errorMsg = err.error?.message || 'Registration failed';
       }
     });
   }
 
-  handleGoogleLogin(token: string) {
-    if (!token) {
-      console.error('Google Auth returned an empty token.');
+  registerWithGoogle() {
+    this.errorMsg = '';
+    this.successMsg = '';
+    this.googleLoading = true;
+    this.googleClientId = resolveGoogleClientId();
+    if (!this.googleClientId) {
+      this.googleLoading = false;
+      this.errorMsg = 'Google client ID is missing in frontend config.';
       return;
     }
 
-    this.ngZone.run(() => {
-      this.isLoading = true;
-      this.auth.loginWithGoogleIdToken(token).subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.toast.show('✅ Login successful!');
-          this.router.navigate(['/resources']);
-        },
-        error: (e) => {
-          this.isLoading = false;
-          this.toast.show('❌ Login failed: ' + (e?.error?.detail ?? e.message ?? 'Unknown error'));
-        }
+    loadGoogleIdentityScript()
+      .then(() => {
+        window.google.accounts.id.initialize({
+          client_id: this.googleClientId,
+          callback: (resp: any) => {
+            const token = resp?.credential;
+            if (!token) {
+              this.googleLoading = false;
+              this.errorMsg = 'Google sign-up failed to return an ID token';
+              return;
+            }
+            this.auth.loginWithGoogleIdToken(token, this.form.role).subscribe({
+              next: user => {
+                this.googleLoading = false;
+                if (user.role === 'ROLE_TECHNICIAN' && user.approvalStatus === 'PENDING_APPROVAL') {
+                  this.successMsg = 'Google sign-up successful. Technician account is pending admin approval.';
+                  return;
+                }
+                if (user.role === 'ROLE_ADMIN') this.router.navigate(['/admin']);
+                else if (user.role === 'ROLE_TECHNICIAN') this.router.navigate(['/ticket']);
+                else this.router.navigate(['/facilities']);
+              },
+              error: err => {
+                this.googleLoading = false;
+                this.errorMsg = err.error?.message || 'Google sign-up failed';
+              }
+            });
+          }
+        });
+        window.google.accounts.id.prompt();
+      })
+      .catch((err: any) => {
+        this.googleLoading = false;
+        this.errorMsg = err?.message || 'Unable to load Google sign-in';
       });
-    });
   }
 }

@@ -16,5 +16,15 @@ export class AuthStore {
   logout() {
     this.token = null;
   }
+
+  get user(): any | null {
+    const raw = localStorage.getItem('user');
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
 }
 

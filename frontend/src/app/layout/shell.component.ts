@@ -20,6 +20,7 @@ import { AuthService } from '../features/auth/auth.service';
             
             <a routerLink="/bookings" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Bookings</a>
             <a routerLink="/ticket" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">Tickets</a>
+            <a *ngIf="isAdmin" routerLink="/admin" routerLinkActive="active">Admin</a>
             <app-notifications-panel></app-notifications-panel>
             
             <div class="user-menu" *ngIf="userName; else loginBtn">
@@ -155,9 +156,20 @@ export class ShellComponent implements OnInit {
 
   constructor(private auth: AuthService, private router: Router) {}
 
+  // ✅ ADD IT RIGHT HERE (after constructor is a good place)
+  get isAdmin(): boolean {
+    const user = localStorage.getItem('user');
+    if (!user) return false;
+
+    try {
+      return JSON.parse(user)?.role === 'ROLE_ADMIN';
+    } catch {
+      return false;
+    }
+  }
+
   ngOnInit() {
     this.updateUser();
-    // Refresh user name if login happens in another tab
     window.addEventListener('storage', () => this.updateUser());
   }
 
