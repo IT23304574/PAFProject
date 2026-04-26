@@ -9,7 +9,7 @@ import com.smartcampus.ops.common.NotFoundException;
 import com.smartcampus.ops.common.BadRequestException;
 
 @RestController
-@RequestMapping("/api/v1/resources")
+@RequestMapping("/api/resources")
 @CrossOrigin
 public class ResourceController {
   private static final Logger log = LoggerFactory.getLogger(ResourceController.class);
