@@ -15,7 +15,7 @@
           "options": {
             "outputPath": "dist/smart-campus-ops-hub-frontend",
             "index": "src/index.html",
-            "browser": "src/main.ts",
+            "browser": "src/main.tsx",
             "polyfills": [],
             "tsConfig": "tsconfig.json",
             "assets": [],

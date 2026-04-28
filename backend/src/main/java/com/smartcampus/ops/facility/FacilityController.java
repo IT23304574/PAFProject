@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/facilities")
+@RequestMapping("/api/v1/facilities")
 @CrossOrigin(origins = "http://localhost:4200")
 public class FacilityController {
 

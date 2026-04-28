@@ -1,46 +1,56 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { API_BASE } from '../../core/api';
-import { AuthStore } from '../../core/auth.store';
-import { map, tap } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
-export class AuthService {
-  constructor(private http: HttpClient, private store: AuthStore) {}
+export const AuthService = {
+  async login(username: string, password: string) {
+    const res = await fetch(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    if (!res.ok) {
+      // Try to get specific error message from Spring Boot
+      const errorBody = await res.json().catch(() => ({}));
+      const message = errorBody.message || errorBody.detail || `Server error (${res.status})`;
+      console.error('Login Error Response:', errorBody);
+      throw new Error(message);
+    }
+    const user = await res.json();
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('sc_token', 'logged_in');
+    return user;
+  },
 
-  login(username: string, password: string) {
-    return this.http.post<any>(`${API_BASE}/auth/login`, { username, password }).pipe(
-      tap(user => {
-        // Store user info and set a placeholder token
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('sc_token', 'logged_in');
-        this.store.token = 'logged_in';
-      })
-    );
-  }
+  async register(user: { fullName: string; username: string; password: string; role: string }) {
+    const res = await fetch(`${API_BASE}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user)
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({ message: res.statusText }));
+      throw new Error(`Registration failed: ${errorData.message || res.statusText}`);
+    }
+    return res.json();
+  },
 
-  register(user: any) {
-    return this.http.post<any>(`${API_BASE}/auth/register`, user);
-  }
-
-  loginWithGoogleIdToken(token: string) {
-    console.log('Sending Google Token to backend...');
-    // Sending as 'idToken' is the standard for most Spring Boot tutorials/libraries
-    return this.http.post<any>(`${API_BASE}/auth/google`, { 
-      idToken: token,
-      token: token 
-    }).pipe(
-      tap(user => {
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('sc_token', 'logged_in');
-        this.store.token = 'logged_in';
-      })
-    );
-  }
+  async loginWithGoogleIdToken(token: string) {
+    const res = await fetch(`${API_BASE}/auth/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: token, token: token })
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({ message: res.statusText }));
+      throw new Error(`Google login failed: ${errorData.message || res.statusText}`);
+    }
+    const user = await res.json();
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('sc_token', 'logged_in');
+    return user;
+  },
 
   logout() {
     localStorage.removeItem('user');
     localStorage.removeItem('sc_token');
-    this.store.logout();
   }
-}
+};

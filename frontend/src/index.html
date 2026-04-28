@@ -12,23 +12,26 @@
     </style>
   </head>
   <body>
-    <div class="loading">Loading Smart Campus Ops Hub...</div>
-    <div id="error-container"></div>
-    <app-root></app-root>
+    <div id="root">
+      <div class="loading">Loading Smart Campus Ops Hub...</div>
+      <div id="error-container"></div>
+    </div>
     <script>
       console.log('=== index.html loaded ===');
-      console.log('app-root element:', document.querySelector('app-root'));
+      console.log('React root element:', document.getElementById('root'));
       
       // Catch any global errors
       window.addEventListener('error', (event) => {
         console.error('Global error:', event.error);
-        document.getElementById('error-container').innerHTML = '<div class="error">Error: ' + event.error + '</div>';
+        const container = document.getElementById('error-container');
+        if (container) container.innerHTML = '<div class="error">Error: ' + event.error + '</div>';
       });
       
       // Catch unhandled promise rejections
       window.addEventListener('unhandledrejection', (event) => {
         console.error('Unhandled rejection:', event.reason);
-        document.getElementById('error-container').innerHTML = '<div class="error">Error: ' + event.reason + '</div>';
+        const container = document.getElementById('error-container');
+        if (container) container.innerHTML = '<div class="error">Error: ' + event.reason + '</div>';
       });
     </script>
   </body>

@@ -45,12 +45,13 @@ public class BookingController {
       }
       List<Booking> list = bookingRepository.findByUserId(userId);
 
-      log.info("**************************************************");
-      log.info("DATABASE SYNC CHECK");
+      log.info("================ DATABASE SYNC CHECK ================");
+      log.info("MONGO HOST: {}", mongoTemplate.getMongoDatabaseFactory().getMongoDatabase().getName());
       log.info("ACTUAL DB NAME: '{}'", mongoTemplate.getDb().getName());
-      log.info("FILTERING FOR USER: {}", userId);
-      log.info("RESULTS: Found {} user bookings (Total in this DB: {})", list.size(), bookingRepository.count());
-      log.info("**************************************************");
+      log.info("USER CONTEXT: {}", userId);
+      log.info("SYNC STATUS: Found {} user records (Collection Total: {})", 
+          list.size(), bookingRepository.count());
+      log.info("=====================================================");
       
       return list;
     } catch (Exception e) {
