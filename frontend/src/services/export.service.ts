@@ -3,7 +3,6 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 export interface Facility {
-  id?: string;
   name: string;
   type: string;
   capacity: number;
@@ -19,7 +18,6 @@ export const exportToExcel = (facilities: Facility[], fileName: string = 'facili
   }
 
   const data = facilities.map(f => ({
-    'ID': f.id || '-',
     'Name': f.name,
     'Type': f.type,
     'Capacity': f.capacity,
@@ -55,7 +53,6 @@ export const exportToPDF = (facilities: Facility[], title: string = 'Facilities 
   doc.text(dateStr, 14, 30);
   
   const tableData = facilities.map(f => [
-    f.id?.substring(0, 12) + '...' || '-',
     f.name,
     f.type,
     f.capacity?.toString() || '-',
@@ -66,7 +63,7 @@ export const exportToPDF = (facilities: Facility[], title: string = 'Facilities 
   ]);
   
   autoTable(doc, {
-    head: [['ID', 'Name', 'Type', 'Capacity', 'Location', 'From', 'To', 'Status']],
+    head: [['Name', 'Type', 'Capacity', 'Location', 'From', 'To', 'Status']],
     body: tableData,
     startY: 35,
     theme: 'striped',
