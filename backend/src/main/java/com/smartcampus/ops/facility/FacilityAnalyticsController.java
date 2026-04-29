@@ -1,11 +1,8 @@
 package com.smartcampus.ops.facility;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
@@ -13,29 +10,26 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:4200")
 public class FacilityAnalyticsController {
 
-    private final FacilityAnalyticsService facilityAnalyticsService;
-
-    public FacilityAnalyticsController(FacilityAnalyticsService facilityAnalyticsService) {
-        this.facilityAnalyticsService = facilityAnalyticsService;
-    }
+    @Autowired
+    private FacilityAnalyticsService analyticsService;
 
     @GetMapping("/most-booked")
     public ResponseEntity<Map<String, Object>> getMostBookedFacilities() {
-        return ResponseEntity.ok(facilityAnalyticsService.getMostBookedFacilities());
+        return ResponseEntity.ok(analyticsService.getMostBookedFacilities());
     }
 
     @GetMapping("/peak-hours")
     public ResponseEntity<Map<String, Object>> getPeakHours() {
-        return ResponseEntity.ok(facilityAnalyticsService.getPeakHours());
+        return ResponseEntity.ok(analyticsService.getPeakHours());
     }
 
-    @GetMapping("/utilization-rates")
+    @GetMapping("/utilization")
     public ResponseEntity<Map<String, Object>> getUtilizationRates() {
-        return ResponseEntity.ok(facilityAnalyticsService.getUtilizationRates());
+        return ResponseEntity.ok(analyticsService.getUtilizationRates());
     }
 
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Object>> getTotalStats() {
-        return ResponseEntity.ok(facilityAnalyticsService.getTotalStats());
+        return ResponseEntity.ok(analyticsService.getTotalStats());
     }
 }

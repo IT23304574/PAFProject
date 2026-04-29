@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "facilities")
 public class Facility {
+
     @Id
     private String id;
     
@@ -22,10 +23,10 @@ public class Facility {
     private String location;
     
     @Field("available_from")
-    private String availableFrom;
+    private String availableFrom;  // Changed from LocalTime to String
     
     @Field("available_to")
-    private String availableTo;
+    private String availableTo;    // Changed from LocalTime to String
     
     @Field("status")
     private String status;
