@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { API_BASE } from '../../core/api';
 import { AuthStore } from '../../core/auth.store';
-import { map, tap } from 'rxjs';
+import { tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -11,36 +11,40 @@ export class AuthService {
   login(username: string, password: string) {
     return this.http.post<any>(`${API_BASE}/auth/login`, { username, password }).pipe(
       tap(user => {
-        // Store user info and set a placeholder token
         localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('sc_token', 'logged_in');
-        this.store.token = 'logged_in';
+        this.store.token = user.id || 'logged_in';
       })
     );
   }
 
-  register(user: any) {
-    return this.http.post<any>(`${API_BASE}/auth/register`, user);
+  register(payload: any) {
+    return this.http.post<any>(`${API_BASE}/auth/register`, payload);
   }
 
-  loginWithGoogleIdToken(token: string) {
-    console.log('Sending Google Token to backend...');
-    // Sending as 'idToken' is the standard for most Spring Boot tutorials/libraries
-    return this.http.post<any>(`${API_BASE}/auth/google`, { 
-      idToken: token,
-      token: token 
-    }).pipe(
+  loginWithGoogleIdToken(token: string, role?: string) {
+    return this.http.post<any>(`${API_BASE}/auth/google`, { idToken: token, role }).pipe(
       tap(user => {
         localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('sc_token', 'logged_in');
-        this.store.token = 'logged_in';
+        this.store.token = user.id || 'logged_in';
       })
     );
   }
 
   logout() {
     localStorage.removeItem('user');
-    localStorage.removeItem('sc_token');
     this.store.logout();
+  }
+
+  getCurrentUser(): any {
+    const raw = localStorage.getItem('user');
+    return raw ? JSON.parse(raw) : null;
+  }
+
+  isAdmin(): boolean {
+    return this.getCurrentUser()?.role === 'ROLE_ADMIN';
+  }
+
+  isTechnician(): boolean {
+    return this.getCurrentUser()?.role === 'ROLE_TECHNICIAN';
   }
 }

@@ -1,16 +1,33 @@
 spring:
   data:
     mongodb:
+<<<<<<< HEAD
+      # FIX: %23 decoded to literal # and entire URI quoted to prevent YAML parsing issues
+      uri: "${MONGODB_URI:mongodb+srv://sadeesh:82539685#Jmc@paf.eo9iuqw.mongodb.net/smartcampus_ops?retryWrites=true&w=majority}"
+=======
       uri: ${MONGODB_URI:mongodb+srv://sadeesh:82539685%23Jmc@paf.eo9iuqw.mongodb.net/smartcampus_ops?retryWrites=true&w=majority}
+>>>>>>> origin/main
 
   servlet:
     multipart:
       max-file-size: 5MB
       max-request-size: 6MB
+<<<<<<< HEAD
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "495535311823-hi9dh19tliujajqfiuepv7aafk2n3rij.apps.googleusercontent.com"
+            client-secret: "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"
+            scope: openid,profile,email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+=======
 
   # Silence the open-in-view warning (safe to keep even after removing JPA)
   jpa:
     open-in-view: false
+>>>>>>> origin/main
 
 server:
   port: 8080
@@ -20,7 +37,11 @@ app:
   jwt:
     issuer: smart-campus-ops-hub
     ttlMinutes: 240
+<<<<<<< HEAD
+    secret: "dev-only-change-this-secret-dev-only-change-this-secret"
+=======
     secret: "${JWT_SECRET:dev-only-change-this-secret-dev-only-change-this-secret}"
+>>>>>>> origin/main
   uploads:
     dir: "${user.home}/smartcampus-uploads"
     maxBytes: 5242880
@@ -29,3 +50,8 @@ logging:
   level:
     org.springframework.web: DEBUG
     com.smartcampus.ops: DEBUG
+
+google:
+  client:
+    id: "495535311823-hi9dh19tliujajqfiuepv7aafk2n3rij.apps.googleusercontent.com"
+    secret: "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"

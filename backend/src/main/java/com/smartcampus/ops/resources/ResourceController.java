@@ -10,6 +10,10 @@ import com.smartcampus.ops.common.BadRequestException;
 
 @RestController
 @RequestMapping("/api/resources")
+<<<<<<< HEAD
+@CrossOrigin
+=======
+>>>>>>> origin/main
 public class ResourceController {
 
     private static final Logger log = LoggerFactory.getLogger(ResourceController.class);

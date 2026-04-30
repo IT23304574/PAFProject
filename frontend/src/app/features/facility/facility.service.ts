@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_BASE } from '../../core/api';
 
 export interface Facility {
   id?: string;  // 👈 Changed from number to string (MongoDB ObjectId)
@@ -17,7 +18,7 @@ export interface Facility {
   providedIn: 'root'
 })
 export class FacilityService {
-  private apiUrl = 'http://localhost:8080/api/facilities';
+  private apiUrl = `${API_BASE}/facilities`;
 
   constructor(private http: HttpClient) { }
 
