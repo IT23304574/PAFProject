@@ -20,6 +20,7 @@ import java.util.Set;
 public class AuthController {
 
     private final NetHttpTransport transport = new NetHttpTransport();
+<<<<<<< HEAD
     private final GsonFactory jsonFactory  = GsonFactory.getDefaultInstance();
 
     @Value("${google.client.id:}")
@@ -93,10 +94,45 @@ public class AuthController {
         if (googleClientId == null || googleClientId.isBlank()) {
             throw new BadRequestException("Google OAuth client ID is not configured");
         }
+=======
+    private final GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+
+    @Value("${google.client.id:725051219392-u8oac67c5dusdgb9ht9q3u683iss1lfl.apps.googleusercontent.com}")
+    private String googleClientId;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @PostMapping("/register")
+    public User register(@RequestBody User user) {
+        if (userRepository.existsByUsername(user.username)) {
+            throw new BadRequestException("Username already taken");
+        }
+        if (user.role == null) user.role = "ROLE_USER";
+        return userRepository.save(user);
+    }
+
+    @PostMapping("/login")
+    public User login(@RequestBody LoginRequest request) {
+        User user = userRepository.findByUsername(request.username)
+                .orElseThrow(() -> new BadRequestException("Invalid email or password"));
+        if (user.password == null || !user.password.equals(request.password)) {
+            throw new BadRequestException("Invalid email or password");
+        }
+        return user;
+    }
+
+    @PostMapping("/google")
+    public User googleLogin(@RequestBody LoginRequest request) {
+        if (request.idToken == null || request.idToken.isEmpty()) {
+            throw new BadRequestException("ID Token is required");
+        }
+>>>>>>> origin/main
         try {
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
                     .setAudience(Collections.singletonList(googleClientId))
                     .build();
+<<<<<<< HEAD
             GoogleIdToken token = verifier.verify(idToken);
             if (token == null) throw new BadRequestException("Invalid ID Token");
 
@@ -133,11 +169,29 @@ public class AuthController {
             }
 
             return ResponseEntity.ok(user);
+=======
+            GoogleIdToken idToken = verifier.verify(request.idToken);
+            if (idToken == null) throw new BadRequestException("Invalid ID Token");
+
+            Payload payload = idToken.getPayload();
+            String email = payload.getEmail();
+            String name = (String) payload.get("name");
+
+            return userRepository.findByUsername(email)
+                    .orElseGet(() -> {
+                        User newUser = new User();
+                        newUser.username = email;
+                        newUser.fullName = name != null ? name : "Google User";
+                        newUser.role = "ROLE_USER";
+                        return userRepository.save(newUser);
+                    });
+>>>>>>> origin/main
         } catch (Exception e) {
             throw new BadRequestException("Authentication failed: " + e.getMessage());
         }
     }
 
+<<<<<<< HEAD
     private String normalizeRole(String role) {
         Set<String> allowed = Set.of("ROLE_USER", "ROLE_TECHNICIAN", "ROLE_ADMIN");
         if (role == null || role.isBlank()) {
@@ -159,5 +213,11 @@ public class AuthController {
         public String role;
         public String phone;
         public String department;
+=======
+    public static class LoginRequest {
+        public String username;
+        public String password;
+        public String idToken;
+>>>>>>> origin/main
     }
 }

@@ -12,6 +12,7 @@ public class User {
     public String id;
 
     @Indexed(unique = true)
+<<<<<<< HEAD
     public String username; // email
 
     @JsonIgnore
@@ -34,6 +35,15 @@ public class User {
     public String authProvider; // LOCAL | GOOGLE
     public String googleSub;
     public Boolean emailVerified;
+=======
+    public String username;
+
+    public String password;
+
+    public String fullName;
+
+    public String role; // ROLE_USER, ROLE_ADMIN
+>>>>>>> origin/main
 
     public User() {}
 
@@ -42,6 +52,7 @@ public class User {
         this.password = password;
         this.fullName = fullName;
         this.role = role;
+<<<<<<< HEAD
         this.approvalStatus = "ROLE_TECHNICIAN".equals(role) ? "PENDING_APPROVAL" : "APPROVED";
         this.authProvider = "LOCAL";
         this.emailVerified = false;
@@ -54,4 +65,14 @@ public class User {
     public String getApprovalStatus() { return approvalStatus; }
     public void setPassword(String p) { this.password = p; }
     public void setApprovalStatus(String s) { this.approvalStatus = s; }
+=======
+    }
+
+    // Getters still needed by Spring Security
+    public String getUsername() { return username; }
+    public String getPassword() { return password; }
+    public String getFullName() { return fullName; }
+    public String getRole() { return role; }
+    public void setPassword(String password) { this.password = password; }
+>>>>>>> origin/main
 }

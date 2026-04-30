@@ -133,6 +133,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private auth: AuthService, private router: Router) {}
 
+<<<<<<< HEAD
   ngOnInit() {
     this.googleClientId = resolveGoogleClientId();
   }
@@ -162,6 +163,81 @@ export class LoginComponent implements OnInit {
           this.errorMsg = msg;
         }
       }
+=======
+  constructor(
+    public toast: ToastService,
+    private auth: AuthService,
+    private router: Router,
+    private ngZone: NgZone
+  ) {
+    this.checkLoginStatus();
+  }
+
+  ngOnInit() {
+    const isLibraryLoaded = !!(window as any).google?.accounts?.id;
+
+    if (!isLibraryLoaded) {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        console.log('Google Auth script loaded dynamically.');
+        this.waitForButtonAndInit();
+      };
+      script.onerror = () => {
+        console.error('Google Auth script failed to load.');
+      };
+      document.head.appendChild(script);
+    } else {
+      this.waitForButtonAndInit();
+    }
+  }
+
+  private waitForButtonAndInit() {
+    this.googleInitInterval = setInterval(() => {
+      const g = (window as any).google?.accounts?.id;
+      const btn = document.getElementById('googleBtn');
+      if (g && btn) {
+        this.initGoogleAuth();
+        clearInterval(this.googleInitInterval);
+      }
+    }, 100);
+  }
+
+  ngOnDestroy() {
+    if (this.googleInitInterval) {
+      clearInterval(this.googleInitInterval);
+    }
+  }
+
+  initGoogleAuth() {
+    const g = (window as any).google;
+    if (!g) return;
+
+    g.accounts.id.initialize({
+      client_id: '725051219392-u8oac67c5dusdgb9ht9q3u683iss1lfl.apps.googleusercontent.com',
+      callback: (response: any) => this.ngZone.run(() => this.handleGoogleLogin(response.credential)),
+      auto_select: false,
+      ux_mode: 'popup',
+      context: 'signin'
+    });
+    g.accounts.id.renderButton(
+      document.getElementById('googleBtn'),
+      { theme: 'outline', size: 'large', width: 350, shape: 'rectangular', text: 'signin_with' }
+    );
+  }
+
+  checkLoginStatus() {
+    this.isLoggedIn = !!localStorage.getItem('sc_token');
+  }
+
+  login() {
+    this.isLoading = true;
+    this.auth.login(this.email, this.password).subscribe({
+      next: () => this.onLoginSuccess(),
+      error: (e: any) => this.onLoginError(e)
+>>>>>>> origin/main
     });
   }
 
@@ -175,6 +251,7 @@ export class LoginComponent implements OnInit {
       this.errorMsg = 'Google client ID is missing in frontend config.';
       return;
     }
+<<<<<<< HEAD
 
     loadGoogleIdentityScript()
       .then(() => {
@@ -211,6 +288,34 @@ export class LoginComponent implements OnInit {
       .catch((err: any) => {
         this.googleLoading = false;
         this.errorMsg = err?.message || 'Unable to load Google sign-in';
+=======
+    this.ngZone.run(() => {
+      this.isLoading = true;
+      this.auth.loginWithGoogleIdToken(token).subscribe({
+        next: () => this.onLoginSuccess(),
+        error: (e: any) => this.onLoginError(e)
+>>>>>>> origin/main
       });
   }
+<<<<<<< HEAD
+=======
+
+  private onLoginSuccess() {
+    this.isLoading = false;
+    this.toast.show('✅ Login successful!');
+    this.isLoggedIn = true;
+    setTimeout(() => this.router.navigate(['/tickets']), 1000);
+  }
+
+  private onLoginError(e: any) {
+    this.isLoading = false;
+    this.toast.show('❌ Login failed: ' + (e?.error?.detail ?? e.message ?? 'Unknown error'));
+  }
+
+  logout() {
+    this.auth.logout();
+    this.isLoggedIn = false;
+    this.toast.show('✅ Logged out successfully');
+  }
+>>>>>>> origin/main
 }
