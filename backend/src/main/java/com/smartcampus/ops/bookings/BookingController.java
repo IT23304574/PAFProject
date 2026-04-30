@@ -86,7 +86,7 @@ public class BookingController {
     }
 
     // 1. Time Validation: Ensure end time is actually after start time
-    if (booking.endTime == null || !booking.endTime.isAfter(booking.startTime)) {
+    if (!booking.endTime.isAfter(booking.startTime)) {
       log.warn("Time validation failed: End time {} is before or equal to Start time {}", booking.endTime, booking.startTime);
       throw new com.smartcampus.ops.common.BadRequestException("Error: Booking end time must be after the start time.");
     }
